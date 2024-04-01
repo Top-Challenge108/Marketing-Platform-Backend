@@ -1,0 +1,46 @@
+version: '3.1'
+services:
+  mongo:
+    image: mongo:jammy
+    restart: always
+    networks:
+      - girs-network
+    ports:
+      - 27017:27017
+    volumes:
+      - dbdata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 12345a
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - girs-network
+    ports:
+      - 6379:6379
+    volumes: 
+      - cache:/data
+  girs_api:
+    container_name: girs_api
+    image: girs-api:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:3000
+    networks:
+      - girs-network
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - redis
+
+networks:
+  girs-network:
+
+volumes:
+  dbdata:
+  cache:
