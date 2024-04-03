@@ -28,6 +28,7 @@ const permissions_service_1 = require("./modules/permissions/permissions.service
 const language_module_1 = require("./modules/language/language.module");
 const redis_module_1 = require("./modules/redis/redis.module");
 const location_module_1 = require("./modules/location/location.module");
+const payment_module_1 = require("./modules/payment/payment.module");
 let AppModule = class AppModule {
     constructor(discover, permissionsService) {
         this.discover = discover;
@@ -67,6 +68,7 @@ exports.AppModule = AppModule = __decorate([
             language_module_1.LanguageModule,
             redis_module_1.RedisModule,
             location_module_1.LocationModule,
+            payment_module_1.PaymentModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

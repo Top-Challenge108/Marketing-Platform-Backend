@@ -17,6 +17,7 @@ import { PermissionsService } from './modules/permissions/permissions.service';
 import { LanguageModule } from './modules/language/language.module';
 import { RedisModule } from './modules/redis/redis.module';
 import { LocationModule } from './modules/location/location.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { LocationModule } from './modules/location/location.module';
     LanguageModule,
     RedisModule,
     LocationModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

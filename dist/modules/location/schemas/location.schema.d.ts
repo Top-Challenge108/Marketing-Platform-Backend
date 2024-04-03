@@ -37,34 +37,34 @@ declare const LocationSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
     updatedAt: NativeDate;
 } & {
     name?: string;
+    address?: string;
+    city?: string;
     placeId?: string;
     location?: {
         type?: string;
     };
-    address?: string;
-    city?: string;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
     name?: string;
+    address?: string;
+    city?: string;
     placeId?: string;
     location?: {
         type?: string;
     };
-    address?: string;
-    city?: string;
 }>> & mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
     name?: string;
+    address?: string;
+    city?: string;
     placeId?: string;
     location?: {
         type?: string;
     };
-    address?: string;
-    city?: string;
 }> & {
     _id: mongoose.Types.ObjectId;
 }>;

@@ -41,6 +41,8 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     joinDate: Date;
     citizenship: string;
     gender: string;
+    createdAt?: Date;
+    updatedAt?: Date;
     avatar?: string;
     password?: string;
     salt?: string;
@@ -50,8 +52,6 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     phone?: string;
     dob?: Date;
     lastUpdatePassword?: Date;
-    createdAt?: Date;
-    updatedAt?: Date;
     language?: string;
     website?: string;
     bio?: string;
@@ -73,6 +73,8 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     joinDate: Date;
     citizenship: string;
     gender: string;
+    createdAt?: Date;
+    updatedAt?: Date;
     avatar?: string;
     password?: string;
     salt?: string;
@@ -82,8 +84,6 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     phone?: string;
     dob?: Date;
     lastUpdatePassword?: Date;
-    createdAt?: Date;
-    updatedAt?: Date;
     language?: string;
     website?: string;
     bio?: string;
@@ -105,6 +105,8 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     joinDate: Date;
     citizenship: string;
     gender: string;
+    createdAt?: Date;
+    updatedAt?: Date;
     avatar?: string;
     password?: string;
     salt?: string;
@@ -114,8 +116,6 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     phone?: string;
     dob?: Date;
     lastUpdatePassword?: Date;
-    createdAt?: Date;
-    updatedAt?: Date;
     language?: string;
     website?: string;
     bio?: string;

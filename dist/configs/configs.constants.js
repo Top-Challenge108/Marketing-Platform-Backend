@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.googleConfig = exports.azureConfig = exports.redisConfig = exports.CommonConfig = exports.JwtConfig = void 0;
+exports.stripeConfig = exports.googleConfig = exports.azureConfig = exports.redisConfig = exports.CommonConfig = exports.JwtConfig = void 0;
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 exports.JwtConfig = {
@@ -26,5 +26,11 @@ exports.azureConfig = {
 };
 exports.googleConfig = {
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+};
+exports.stripeConfig = {
+    STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+    STRIPE_PRIVATE_KEY: process.env.STRIPE_PRIVATE_KEY,
+    STRIPE_CURRENCY: process.env.STRIPE_CURRENCY,
+    FRONTEND_URL: process.env.FRONTEND_URL,
 };
 //# sourceMappingURL=configs.constants.js.map

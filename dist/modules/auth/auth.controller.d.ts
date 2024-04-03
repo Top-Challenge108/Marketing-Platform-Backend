@@ -14,7 +14,7 @@ export declare class AuthController {
     memberSignUp(signUpDto: SignUpDto): Promise<ResponseLoginDto>;
     login(loginDto: LoginDto, headerDto: HeaderDto): Promise<ResponseLoginDto>;
     refreshToken(req: Request, refreshTokenDto: RefreshTokenDto): Promise<{
-        user: import("../user/interface/user.schema.interface").IUser;
+        user: import("src/modules/user/interface/user.schema.interface").IUser;
         accessToken: string;
         refreshToken: any;
     }>;
