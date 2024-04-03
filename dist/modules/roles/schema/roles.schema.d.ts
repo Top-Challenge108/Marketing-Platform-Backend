@@ -21,6 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import * as mongoose from 'mongoose';
 declare const ROLES_MODEL = "roles";
@@ -30,26 +31,26 @@ declare const RolesSchema: mongoose.Schema<any, mongoose.Model<any, any, any, an
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    active: boolean;
     permissions: string[];
-    description?: string;
+    active: boolean;
     name?: string;
+    description?: string;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    active: boolean;
     permissions: string[];
-    description?: string;
+    active: boolean;
     name?: string;
+    description?: string;
 }>> & mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    active: boolean;
     permissions: string[];
-    description?: string;
+    active: boolean;
     name?: string;
+    description?: string;
 }> & {
     _id: mongoose.Types.ObjectId;
 }>;

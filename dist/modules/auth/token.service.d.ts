@@ -14,12 +14,12 @@ export declare class TokenService extends BaseAbstractService {
     constructor(userService: UserService, jwtService: JwtService, redisService: RedisService, languageService: LanguageService, i18nService: I18nService);
     createTokenLogin(userId: string, deviceId: string): Promise<{
         user: import("src/modules/user/interface/user.schema.interface").IUser;
-        accessToken: string;
-        refreshToken: string;
+        accessToken: any;
+        refreshToken: any;
     }>;
     refreshToken(payload: IJwtRefreshToken, refreshTokenDto: RefreshTokenDto): Promise<{
         user: import("src/modules/user/interface/user.schema.interface").IUser;
-        accessToken: string;
+        accessToken: any;
         refreshToken: any;
     }>;
 }

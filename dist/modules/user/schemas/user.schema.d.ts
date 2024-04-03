@@ -21,6 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import * as mongoose from 'mongoose';
 import { TypeStatus } from '../../../common/common.constants';
@@ -41,8 +42,6 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     joinDate: Date;
     citizenship: string;
     gender: string;
-    createdAt?: Date;
-    updatedAt?: Date;
     avatar?: string;
     password?: string;
     salt?: string;
@@ -52,17 +51,13 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     phone?: string;
     dob?: Date;
     lastUpdatePassword?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
     language?: string;
     website?: string;
     bio?: string;
     locationId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
     company?: string;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
@@ -73,8 +68,6 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     joinDate: Date;
     citizenship: string;
     gender: string;
-    createdAt?: Date;
-    updatedAt?: Date;
     avatar?: string;
     password?: string;
     salt?: string;
@@ -84,17 +77,13 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     phone?: string;
     dob?: Date;
     lastUpdatePassword?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
     language?: string;
     website?: string;
     bio?: string;
     locationId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
     company?: string;
 }>> & mongoose.FlatRecord<{
@@ -105,8 +94,6 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     joinDate: Date;
     citizenship: string;
     gender: string;
-    createdAt?: Date;
-    updatedAt?: Date;
     avatar?: string;
     password?: string;
     salt?: string;
@@ -116,17 +103,13 @@ declare const UserSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any
     phone?: string;
     dob?: Date;
     lastUpdatePassword?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
     language?: string;
     website?: string;
     bio?: string;
     locationId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
     company?: string;
 }> & {

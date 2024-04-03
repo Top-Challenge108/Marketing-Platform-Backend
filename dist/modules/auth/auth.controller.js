@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const swagger_1 = require("@nestjs/swagger");
@@ -20,6 +21,7 @@ const passport_1 = require("@nestjs/passport");
 const response_login_dto_1 = require("./dto/response-login.dto");
 const sign_up_dto_1 = require("./dto/sign-up.dto");
 const common_dto_1 = require("../../common/common.dto");
+const express_1 = require("express");
 const login_user_dto_1 = require("./dto/login-user.dto");
 const refresh_token_dto_1 = require("./dto/refresh-token.dto");
 const logout_user_dto_1 = require("./dto/logout-user.dto");
@@ -54,7 +56,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, logout_user_dto_1.LogoutDto]),
+    __metadata("design:paramtypes", [typeof (_a = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _a : Object, logout_user_dto_1.LogoutDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logOut", null);
 __decorate([
@@ -88,7 +90,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, refresh_token_dto_1.RefreshTokenDto]),
+    __metadata("design:paramtypes", [typeof (_b = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _b : Object, refresh_token_dto_1.RefreshTokenDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refreshToken", null);
 __decorate([

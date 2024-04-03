@@ -21,6 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import * as mongoose from 'mongoose';
 declare const LOCATION_MODEL = "locations";
@@ -37,34 +38,34 @@ declare const LocationSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
     updatedAt: NativeDate;
 } & {
     name?: string;
-    address?: string;
-    city?: string;
     placeId?: string;
     location?: {
         type?: string;
     };
+    address?: string;
+    city?: string;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
     name?: string;
-    address?: string;
-    city?: string;
     placeId?: string;
     location?: {
         type?: string;
     };
+    address?: string;
+    city?: string;
 }>> & mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
     name?: string;
-    address?: string;
-    city?: string;
     placeId?: string;
     location?: {
         type?: string;
     };
+    address?: string;
+    city?: string;
 }> & {
     _id: mongoose.Types.ObjectId;
 }>;

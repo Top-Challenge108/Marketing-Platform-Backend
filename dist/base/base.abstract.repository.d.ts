@@ -21,6 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import { BaseInterfaceRepository } from './base.interface.repository';
 import { Model } from 'mongoose';
@@ -33,11 +34,11 @@ export declare abstract class BaseAbstractRepository<T> implements BaseInterface
     create(data: T | any): Promise<import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>>;
     insertMany(docs: Array<T> | any, options?: T | any | null): Promise<import("mongoose").Require_id<T>[]>;
     updateOne(filter: T | any, data: T | any, options?: T | any | null): import("mongoose").Query<import("mongoose").ModifyResult<T>, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "findOneAndUpdate">;
-    updateMany(filter: T | any, data: T | any, options?: T | any | null): import("mongoose").Query<import("mongoose").UpdateWriteOpResult, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "updateMany">;
+    updateMany(filter: T | any, data: T | any, options?: T | any | null): import("mongoose").Query<mongodb.UpdateResult, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "updateMany">;
     findOne(filter: T | any): import("mongoose").Query<import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "findOne">;
     findAll(filter?: T | any | null, projection?: T | null): import("mongoose").Query<import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>[], import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "find">;
-    deleteOne(filter: T | any, projection?: T | null): import("mongoose").Query<import("mongodb").DeleteResult, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "deleteOne">;
-    deleteMany(filter: T | any, options?: T | any): import("mongoose").Query<import("mongodb").DeleteResult, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "deleteMany">;
+    deleteOne(filter: T | any, projection?: T | null): import("mongoose").Query<mongodb.DeleteResult, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "deleteOne">;
+    deleteMany(filter: T | any, options?: T | any): import("mongoose").Query<mongodb.DeleteResult, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "deleteMany">;
     findByIdAndDelete(id: string, options?: T | any): import("mongoose").Query<T extends any[] ? import("mongoose").Require_id<import("mongoose").FlattenMaps<T>>[] : import("mongoose").Require_id<import("mongoose").FlattenMaps<T>>, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "findOneAndDelete">;
     findByIdAndUpdate(id: string, update: T | any, options?: T | any): import("mongoose").Query<T extends any[] ? import("mongoose").Require_id<import("mongoose").FlattenMaps<T>>[] : import("mongoose").Require_id<import("mongoose").FlattenMaps<T>>, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "findOneAndUpdate">;
     findOneAndUpdate(filter: T | any, update: T | any, options?: T | any): import("mongoose").Query<import("mongoose").ModifyResult<T>, import("mongoose").IfAny<T, any, import("mongoose").Document<unknown, {}, T> & import("mongoose").Require_id<T>>, {}, T, "findOneAndUpdate">;

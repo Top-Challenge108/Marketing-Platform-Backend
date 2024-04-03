@@ -21,6 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import * as mongoose from 'mongoose';
 declare const USER_ROLE_MODEL = "user-roles";
@@ -32,21 +33,9 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
 } & {
     userId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
     roleId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     createdAt: NativeDate;
@@ -54,21 +43,9 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
 } & {
     userId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
     roleId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
 }>> & mongoose.FlatRecord<{
     createdAt: NativeDate;
@@ -76,21 +53,9 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
 } & {
     userId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
     roleId?: {
         prototype?: mongoose.Types.ObjectId;
-        cacheHexString?: unknown;
-        generate?: {};
-        createFromTime?: {};
-        createFromHexString?: {};
-        createFromBase64?: {};
-        isValid?: {};
     };
 }> & {
     _id: mongoose.Types.ObjectId;

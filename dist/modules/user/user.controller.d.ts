@@ -12,7 +12,7 @@ export declare class UserController {
     getUsers(getUserDto: GetUserDto): Promise<any>;
     findUser(req: any): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;

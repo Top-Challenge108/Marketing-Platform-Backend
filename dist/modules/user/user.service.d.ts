@@ -21,6 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import mongoose from 'mongoose';
 import { I18nService } from 'nestjs-i18n';
@@ -48,14 +49,14 @@ export declare class UserService extends BaseAbstractService {
     private readonly locationService;
     constructor(userRepository: UserRepository, i18nService: I18nService, rolesService: RolesService, languageService: LanguageService, tokenService: TokenService, locationService: LocationService);
     hashPassword(password: string): Promise<{
-        salt: string;
-        hashPassword: string;
+        salt: any;
+        hashPassword: any;
     }>;
     findUserByEmail(email: string): Promise<IUser>;
     findUserByGoogleId(googleId: string): Promise<IUser>;
     changePassword(user: IJwtPayload, changePasswordDto: ChangePasswordDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
@@ -64,43 +65,43 @@ export declare class UserService extends BaseAbstractService {
     findOneById(_id: string): Promise<IUser>;
     create(createTodoDto: any): Promise<IUser>;
     updateOneById(_id: string, updateOneTodoDto: any): Promise<mongoose.ModifyResult<import("./interface/user.schema.interface").UserDocument>>;
-    deleteOneById(_id: string): Promise<mongoose.mongo.DeleteResult>;
+    deleteOneById(_id: string): Promise<mongodb.DeleteResult>;
     getProfile(user: IJwtPayload): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
     getUserInformationById(id: string): Promise<IUser>;
     getUserInformation(iddto: IDDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
     paginate(getUserDto: GetUserDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
     aggregatePaginate(getUserDto: GetUserDto): Promise<import("../../common/pagination.dto").CommonPaginationDto>;
     getListUserActiveByRole(userActiveDto: UserActiveDto, lang: string): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
     isValidDate(dob: any): boolean;
     editUserInformation(user: IJwtPayload, editUserInfoDto: EditUserInfoDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
     changeUserStatus(user: any, idDto: IDDto, changeStatusDto: ChangeStatusDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;

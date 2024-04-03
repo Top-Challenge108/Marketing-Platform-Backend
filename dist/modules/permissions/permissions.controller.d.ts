@@ -21,7 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
-/// <reference types="mongoose" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionsDto } from './dto/create-permissions.dto';
@@ -35,7 +35,7 @@ export declare class PermissionsController {
     }>;
     getPermissions(getRolesDto: GetPermissionsDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;

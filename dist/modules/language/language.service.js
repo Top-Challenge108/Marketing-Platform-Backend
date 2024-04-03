@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LanguageService = void 0;
 const common_1 = require("@nestjs/common");
@@ -23,7 +24,6 @@ let LanguageService = class LanguageService extends base_abstract_service_1.Base
 exports.LanguageService = LanguageService;
 exports.LanguageService = LanguageService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [language_repository_1.LanguagesRepository,
-        nestjs_i18n_1.I18nService])
+    __metadata("design:paramtypes", [language_repository_1.LanguagesRepository, typeof (_a = typeof nestjs_i18n_1.I18nService !== "undefined" && nestjs_i18n_1.I18nService) === "function" ? _a : Object])
 ], LanguageService);
 //# sourceMappingURL=language.service.js.map
