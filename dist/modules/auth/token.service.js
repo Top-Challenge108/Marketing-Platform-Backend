@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenService = void 0;
 const common_1 = require("@nestjs/common");
@@ -106,10 +107,7 @@ exports.TokenService = TokenService;
 exports.TokenService = TokenService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
-    __metadata("design:paramtypes", [user_service_1.UserService,
-        jwt_1.JwtService,
-        redis_service_1.RedisService,
-        language_service_1.LanguageService,
-        nestjs_i18n_1.I18nService])
+    __metadata("design:paramtypes", [user_service_1.UserService, typeof (_a = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _a : Object, redis_service_1.RedisService,
+        language_service_1.LanguageService, typeof (_b = typeof nestjs_i18n_1.I18nService !== "undefined" && nestjs_i18n_1.I18nService) === "function" ? _b : Object])
 ], TokenService);
 //# sourceMappingURL=token.service.js.map

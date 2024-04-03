@@ -21,6 +21,7 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types" />
 /// <reference types="mongoose/types/inferschematype" />
 import mongoose from 'mongoose';
 import { I18nService } from 'nestjs-i18n';
@@ -50,10 +51,6 @@ export declare class RolesService extends BaseAbstractService {
     findOne(idRoleDto: IDRoleDto): Promise<any>;
     getRoles(getRolesDto: GetRolesDto): Promise<any>;
     update(id: string, updateRolesDto: UpdateRolesDto): Promise<{
-        name: string;
-        description?: string;
-        active?: boolean;
-        permissions: string[];
         _id: any;
         __v?: any;
         $assertPopulated: <Paths = {}>(path: string | string[], values?: Partial<Paths>) => Omit<import("src/modules/roles/roles.interface").IRolesDoc, keyof Paths> & Paths;
@@ -66,7 +63,7 @@ export declare class RolesService extends BaseAbstractService {
         $inc: (path: string | string[], val?: number) => import("src/modules/roles/roles.interface").IRolesDoc;
         $isEmpty: (path: string) => boolean;
         $isValid: (path: string) => boolean;
-        $locals: mongoose.FlattenMaps<Record<string, unknown>>;
+        $locals: Record<string, unknown>;
         $markValid: (path: string) => void;
         $model: {
             <ModelType = mongoose.Model<unknown, {}, {}, {}, mongoose.Document<unknown, {}, unknown> & Required<{
@@ -75,16 +72,16 @@ export declare class RolesService extends BaseAbstractService {
             <ModelType_1 = mongoose.Model<any, {}, {}, {}, any, any>>(): ModelType_1;
         };
         $op: "save" | "validate" | "remove";
-        $session: (session?: mongoose.mongo.ClientSession) => mongoose.mongo.ClientSession;
+        $session: (session?: any) => any;
         $set: {
             (path: string | Record<string, any>, val: any, type: any, options?: mongoose.DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
             (path: string | Record<string, any>, val: any, options?: mongoose.DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
             (value: string | Record<string, any>): import("src/modules/roles/roles.interface").IRolesDoc;
         };
-        $where: mongoose.FlattenMaps<Record<string, unknown>>;
+        $where: Record<string, unknown>;
         baseModelName?: string;
-        collection: mongoose.Collection<mongoose.mongo.BSON.Document>;
-        db: mongoose.FlattenMaps<mongoose.Connection>;
+        collection: mongoose.Collection<mongodb.Document>;
+        db: mongoose.Connection;
         deleteOne: (options?: mongoose.QueryOptions<unknown>) => any;
         depopulate: (path?: string | string[]) => import("src/modules/roles/roles.interface").IRolesDoc;
         directModifiedPaths: () => string[];
@@ -149,7 +146,7 @@ export declare class RolesService extends BaseAbstractService {
         populated: (path: string) => any;
         replaceOne: (replacement?: mongoose.AnyObject, options?: mongoose.QueryOptions<unknown>) => mongoose.Query<any, import("src/modules/roles/roles.interface").IRolesDoc, {}, import("src/modules/roles/roles.interface").IRolesDoc, "find">;
         save: (options?: mongoose.SaveOptions) => Promise<import("src/modules/roles/roles.interface").IRolesDoc>;
-        schema: mongoose.FlattenMaps<mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
+        schema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
             [x: string]: unknown;
         }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
             [x: string]: unknown;
@@ -157,7 +154,7 @@ export declare class RolesService extends BaseAbstractService {
             [x: string]: unknown;
         }> & Required<{
             _id: unknown;
-        }>>>;
+        }>>;
         set: {
             <T_8 extends string | number | symbol>(path: T_8, val: any, type: any, options?: mongoose.DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
             (path: string | Record<string, any>, val: any, type: any, options?: mongoose.DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
@@ -199,12 +196,15 @@ export declare class RolesService extends BaseAbstractService {
             <T_14 extends string | number | symbol>(pathsToValidate?: T_14 | T_14[], options?: mongoose.AnyObject): mongoose.Error.ValidationError;
             (pathsToValidate?: mongoose.PathsToValidate, options?: mongoose.AnyObject): mongoose.Error.ValidationError;
         };
+        name: string;
+        description?: string;
         status?: string;
+        permissions: string[];
     }>;
     remove(id: string): Promise<void>;
     paginate(getRolesDto: GetRolesDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
@@ -215,11 +215,11 @@ export declare class RolesService extends BaseAbstractService {
     }[];
     createUserRole(addUserRoleDto: AddUserRoleDto): Promise<{
         success: boolean;
-        message: string;
+        message: any;
         result: object;
         statusCode: number;
     }>;
-    removeUserRoles(addUserRoleDto: AddUserRoleDto): Promise<mongoose.mongo.DeleteResult>;
+    removeUserRoles(addUserRoleDto: AddUserRoleDto): Promise<mongodb.DeleteResult>;
     getRoleByName(name: string): Promise<mongoose.Document<unknown, {}, import("src/modules/roles/roles.interface").IRolesDoc> & mongoose.Document<any, any, any> & import("src/modules/roles/roles.interface").IRoles & {
         _id: mongoose.Types.ObjectId;
     }>;

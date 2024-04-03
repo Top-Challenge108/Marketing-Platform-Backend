@@ -15,7 +15,7 @@ export declare class AuthController {
     login(loginDto: LoginDto, headerDto: HeaderDto): Promise<ResponseLoginDto>;
     refreshToken(req: Request, refreshTokenDto: RefreshTokenDto): Promise<{
         user: import("src/modules/user/interface/user.schema.interface").IUser;
-        accessToken: string;
+        accessToken: any;
         refreshToken: any;
     }>;
     verifyToken(): Promise<any>;

@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocationService = void 0;
 const nestjs_i18n_1 = require("nestjs-i18n");
@@ -53,7 +54,6 @@ let LocationService = class LocationService extends base_abstract_service_1.Base
 exports.LocationService = LocationService;
 exports.LocationService = LocationService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [nestjs_i18n_1.I18nService,
-        location_repository_1.LocationRepository])
+    __metadata("design:paramtypes", [typeof (_a = typeof nestjs_i18n_1.I18nService !== "undefined" && nestjs_i18n_1.I18nService) === "function" ? _a : Object, location_repository_1.LocationRepository])
 ], LocationService);
 //# sourceMappingURL=location.service.js.map

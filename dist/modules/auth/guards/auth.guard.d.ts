@@ -1,4 +1,4 @@
-declare const AuthenticationGuard_base: import("@nestjs/passport").Type<import("@nestjs/passport").IAuthGuard>;
+declare const AuthenticationGuard_base: any;
 export declare class AuthenticationGuard extends AuthenticationGuard_base {
 }
 export {};

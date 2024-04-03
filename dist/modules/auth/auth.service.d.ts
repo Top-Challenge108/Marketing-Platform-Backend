@@ -22,7 +22,7 @@ export declare class AuthService extends BaseAbstractService {
     signIn(loginDto: LoginDto, lang: LanguageCode): Promise<ResponseLoginDto>;
     refreshToken(payload: IJwtRefreshToken, refreshTokenDto: RefreshTokenDto): Promise<{
         user: import("src/modules/user/interface/user.schema.interface").IUser;
-        accessToken: string;
+        accessToken: any;
         refreshToken: any;
     }>;
     logOut(user: IJwtPayload, logoutDto: LogoutDto): Promise<any>;

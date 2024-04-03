@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RolesService = void 0;
 const mongoose_1 = require("mongoose");
@@ -280,8 +281,6 @@ exports.RolesService = RolesService = __decorate([
     (0, common_1.Injectable)(),
     __param(3, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [roles_repository_1.RolesRepository,
-        user_role_repository_1.UserRoleRepository,
-        nestjs_i18n_1.I18nService,
-        user_service_1.UserService])
+        user_role_repository_1.UserRoleRepository, typeof (_a = typeof nestjs_i18n_1.I18nService !== "undefined" && nestjs_i18n_1.I18nService) === "function" ? _a : Object, user_service_1.UserService])
 ], RolesService);
 //# sourceMappingURL=roles.service.js.map

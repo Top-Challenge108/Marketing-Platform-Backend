@@ -1,5 +1,4 @@
-import { CreateRolesDto } from './create-roles.dto';
-declare const UpdateRolesDto_base: import("@nestjs/mapped-types").MappedType<Partial<CreateRolesDto>>;
+declare const UpdateRolesDto_base: any;
 export declare class UpdateRolesDto extends UpdateRolesDto_base {
 }
 export {};

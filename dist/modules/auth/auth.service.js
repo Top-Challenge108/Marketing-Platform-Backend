@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -153,8 +154,6 @@ exports.AuthService = AuthService = __decorate([
     __param(0, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [user_service_1.UserService,
         token_service_1.TokenService,
-        redis_service_1.RedisService,
-        nestjs_i18n_1.I18nService,
-        location_service_1.LocationService])
+        redis_service_1.RedisService, typeof (_a = typeof nestjs_i18n_1.I18nService !== "undefined" && nestjs_i18n_1.I18nService) === "function" ? _a : Object, location_service_1.LocationService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
