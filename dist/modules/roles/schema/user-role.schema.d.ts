@@ -30,7 +30,7 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    roleId?: {
+    userId?: {
         prototype?: mongoose.Types.ObjectId;
         cacheHexString?: unknown;
         generate?: {};
@@ -39,7 +39,7 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
         createFromBase64?: {};
         isValid?: {};
     };
-    userId?: {
+    roleId?: {
         prototype?: mongoose.Types.ObjectId;
         cacheHexString?: unknown;
         generate?: {};
@@ -52,7 +52,7 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    roleId?: {
+    userId?: {
         prototype?: mongoose.Types.ObjectId;
         cacheHexString?: unknown;
         generate?: {};
@@ -61,7 +61,7 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
         createFromBase64?: {};
         isValid?: {};
     };
-    userId?: {
+    roleId?: {
         prototype?: mongoose.Types.ObjectId;
         cacheHexString?: unknown;
         generate?: {};
@@ -74,7 +74,7 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    roleId?: {
+    userId?: {
         prototype?: mongoose.Types.ObjectId;
         cacheHexString?: unknown;
         generate?: {};
@@ -83,7 +83,7 @@ declare const UserRoleSchema: mongoose.Schema<any, mongoose.Model<any, any, any,
         createFromBase64?: {};
         isValid?: {};
     };
-    userId?: {
+    roleId?: {
         prototype?: mongoose.Types.ObjectId;
         cacheHexString?: unknown;
         generate?: {};

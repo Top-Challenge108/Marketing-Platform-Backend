@@ -33,7 +33,7 @@ import { IDRoleDto } from './dto/id-role-dto';
 export declare class RolesController {
     private readonly rolesService;
     constructor(rolesService: RolesService);
-    create(createRolesDto: CreateRolesDto): Promise<import("mongoose").Document<unknown, {}, import("./roles.interface").IRolesDoc> & import("mongoose").Document<any, any, any> & import("./roles.interface").IRoles & {
+    create(createRolesDto: CreateRolesDto): Promise<import("mongoose").Document<unknown, {}, import("src/modules/roles/roles.interface").IRolesDoc> & import("mongoose").Document<any, any, any> & import("src/modules/roles/roles.interface").IRoles & {
         _id: import("mongoose").Types.ObjectId;
     }>;
     getAllPermissions(idsDto: IdsDto): Promise<string[]>;
@@ -46,14 +46,14 @@ export declare class RolesController {
         permissions: string[];
         _id: any;
         __v?: any;
-        $assertPopulated: <Paths = {}>(path: string | string[], values?: Partial<Paths>) => Omit<import("./roles.interface").IRolesDoc, keyof Paths> & Paths;
-        $clone: () => import("./roles.interface").IRolesDoc;
+        $assertPopulated: <Paths = {}>(path: string | string[], values?: Partial<Paths>) => Omit<import("src/modules/roles/roles.interface").IRolesDoc, keyof Paths> & Paths;
+        $clone: () => import("src/modules/roles/roles.interface").IRolesDoc;
         $getAllSubdocs: () => import("mongoose").Document<any, any, any>[];
         $ignore: (path: string) => void;
         $isDefault: (path: string) => boolean;
         $isDeleted: (val?: boolean) => boolean;
         $getPopulatedDocs: () => import("mongoose").Document<any, any, any>[];
-        $inc: (path: string | string[], val?: number) => import("./roles.interface").IRolesDoc;
+        $inc: (path: string | string[], val?: number) => import("src/modules/roles/roles.interface").IRolesDoc;
         $isEmpty: (path: string) => boolean;
         $isValid: (path: string) => boolean;
         $locals: import("mongoose").FlattenMaps<Record<string, unknown>>;
@@ -67,16 +67,16 @@ export declare class RolesController {
         $op: "save" | "validate" | "remove";
         $session: (session?: import("mongodb").ClientSession) => import("mongodb").ClientSession;
         $set: {
-            (path: string | Record<string, any>, val: any, type: any, options?: import("mongoose").DocumentSetOptions): import("./roles.interface").IRolesDoc;
-            (path: string | Record<string, any>, val: any, options?: import("mongoose").DocumentSetOptions): import("./roles.interface").IRolesDoc;
-            (value: string | Record<string, any>): import("./roles.interface").IRolesDoc;
+            (path: string | Record<string, any>, val: any, type: any, options?: import("mongoose").DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
+            (path: string | Record<string, any>, val: any, options?: import("mongoose").DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
+            (value: string | Record<string, any>): import("src/modules/roles/roles.interface").IRolesDoc;
         };
         $where: import("mongoose").FlattenMaps<Record<string, unknown>>;
         baseModelName?: string;
         collection: import("mongoose").Collection<import("bson").Document>;
         db: import("mongoose").FlattenMaps<import("mongoose").Connection>;
         deleteOne: (options?: import("mongoose").QueryOptions<unknown>) => any;
-        depopulate: (path?: string | string[]) => import("./roles.interface").IRolesDoc;
+        depopulate: (path?: string | string[]) => import("src/modules/roles/roles.interface").IRolesDoc;
         directModifiedPaths: () => string[];
         equals: (doc: import("mongoose").Document<any, any, any>) => boolean;
         errors?: import("mongoose").Error.ValidationError;
@@ -84,10 +84,10 @@ export declare class RolesController {
             <T extends string | number | symbol>(path: T, type?: any, options?: any): any;
             (path: string, type?: any, options?: any): any;
         };
-        getChanges: () => import("mongoose").UpdateQuery<import("./roles.interface").IRolesDoc>;
+        getChanges: () => import("mongoose").UpdateQuery<import("src/modules/roles/roles.interface").IRolesDoc>;
         id?: any;
-        increment: () => import("./roles.interface").IRolesDoc;
-        init: (obj: import("mongoose").AnyObject, opts?: import("mongoose").AnyObject) => import("./roles.interface").IRolesDoc;
+        increment: () => import("src/modules/roles/roles.interface").IRolesDoc;
+        init: (obj: import("mongoose").AnyObject, opts?: import("mongoose").AnyObject) => import("src/modules/roles/roles.interface").IRolesDoc;
         invalidate: {
             <T_1 extends string | number | symbol>(path: T_1, errorMsg: string | NativeError, value?: any, kind?: string): NativeError;
             (path: string, errorMsg: string | NativeError, value?: any, kind?: string): NativeError;
@@ -105,8 +105,12 @@ export declare class RolesController {
             (path: string): boolean;
         };
         isModified: {
-            <T_5 extends string | number | symbol>(path?: T_5 | T_5[]): boolean;
-            (path?: string | string[]): boolean;
+            <T_5 extends string | number | symbol>(path?: T_5 | T_5[], options?: {
+                ignoreAtomics?: boolean;
+            }): boolean;
+            (path?: string | string[], options?: {
+                ignoreAtomics?: boolean;
+            }): boolean;
         };
         isNew: boolean;
         isSelected: {
@@ -126,29 +130,29 @@ export declare class RolesController {
         modifiedPaths: (options?: {
             includeChildren?: boolean;
         }) => string[];
-        overwrite: (obj: import("mongoose").AnyObject) => import("./roles.interface").IRolesDoc;
+        overwrite: (obj: import("mongoose").AnyObject) => import("src/modules/roles/roles.interface").IRolesDoc;
         $parent: () => import("mongoose").Document<any, any, any>;
         populate: {
-            <Paths_1 = {}>(path: string | import("mongoose").PopulateOptions | (string | import("mongoose").PopulateOptions)[]): Promise<import("mongoose").MergeType<import("./roles.interface").IRolesDoc, Paths_1>>;
-            <Paths_2 = {}>(path: string, select?: string | import("mongoose").AnyObject, model?: import("mongoose").Model<any, {}, {}, {}, any, any>, match?: import("mongoose").AnyObject, options?: import("mongoose").PopulateOptions): Promise<import("mongoose").MergeType<import("./roles.interface").IRolesDoc, Paths_2>>;
+            <Paths_1 = {}>(path: string | import("mongoose").PopulateOptions | (string | import("mongoose").PopulateOptions)[]): Promise<import("mongoose").MergeType<import("src/modules/roles/roles.interface").IRolesDoc, Paths_1>>;
+            <Paths_2 = {}>(path: string, select?: string | import("mongoose").AnyObject, model?: import("mongoose").Model<any, {}, {}, {}, any, any>, match?: import("mongoose").AnyObject, options?: import("mongoose").PopulateOptions): Promise<import("mongoose").MergeType<import("src/modules/roles/roles.interface").IRolesDoc, Paths_2>>;
         };
         populated: (path: string) => any;
-        replaceOne: (replacement?: import("mongoose").AnyObject, options?: import("mongoose").QueryOptions<unknown>) => import("mongoose").Query<any, import("./roles.interface").IRolesDoc, {}, import("./roles.interface").IRolesDoc, "find">;
-        save: (options?: import("mongoose").SaveOptions) => Promise<import("./roles.interface").IRolesDoc>;
+        replaceOne: (replacement?: import("mongoose").AnyObject, options?: import("mongoose").QueryOptions<unknown>) => import("mongoose").Query<any, import("src/modules/roles/roles.interface").IRolesDoc, {}, import("src/modules/roles/roles.interface").IRolesDoc, "find">;
+        save: (options?: import("mongoose").SaveOptions) => Promise<import("src/modules/roles/roles.interface").IRolesDoc>;
         schema: import("mongoose").FlattenMaps<import("mongoose").Schema<any, import("mongoose").Model<any, any, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, {
-            [x: string]: any;
+            [x: string]: unknown;
         }, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<{
-            [x: string]: any;
+            [x: string]: unknown;
         }>> & import("mongoose").FlatRecord<{
-            [x: string]: any;
+            [x: string]: unknown;
         }> & Required<{
             _id: unknown;
         }>>>;
         set: {
-            <T_8 extends string | number | symbol>(path: T_8, val: any, type: any, options?: import("mongoose").DocumentSetOptions): import("./roles.interface").IRolesDoc;
-            (path: string | Record<string, any>, val: any, type: any, options?: import("mongoose").DocumentSetOptions): import("./roles.interface").IRolesDoc;
-            (path: string | Record<string, any>, val: any, options?: import("mongoose").DocumentSetOptions): import("./roles.interface").IRolesDoc;
-            (value: string | Record<string, any>): import("./roles.interface").IRolesDoc;
+            <T_8 extends string | number | symbol>(path: T_8, val: any, type: any, options?: import("mongoose").DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
+            (path: string | Record<string, any>, val: any, type: any, options?: import("mongoose").DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
+            (path: string | Record<string, any>, val: any, options?: import("mongoose").DocumentSetOptions): import("src/modules/roles/roles.interface").IRolesDoc;
+            (value: string | Record<string, any>): import("src/modules/roles/roles.interface").IRolesDoc;
         };
         toJSON: {
             <T_9 = any>(options?: import("mongoose").ToObjectOptions<import("mongoose").Document<unknown, {}, unknown> & Required<{
@@ -169,7 +173,7 @@ export declare class RolesController {
             <T_12 extends string | number | symbol>(path: T_12): void;
             (path: string): void;
         };
-        updateOne: (update?: import("mongoose").UpdateWithAggregationPipeline | import("mongoose").UpdateQuery<import("./roles.interface").IRolesDoc>, options?: import("mongoose").QueryOptions<unknown>) => import("mongoose").Query<any, import("./roles.interface").IRolesDoc, {}, import("./roles.interface").IRolesDoc, "find">;
+        updateOne: (update?: import("mongoose").UpdateWithAggregationPipeline | import("mongoose").UpdateQuery<import("src/modules/roles/roles.interface").IRolesDoc>, options?: import("mongoose").QueryOptions<unknown>) => import("mongoose").Query<any, import("src/modules/roles/roles.interface").IRolesDoc, {}, import("src/modules/roles/roles.interface").IRolesDoc, "find">;
         validate: {
             <T_13 extends string | number | symbol>(pathsToValidate?: T_13 | T_13[], options?: import("mongoose").AnyObject): Promise<void>;
             (pathsToValidate?: import("mongoose").PathsToValidate, options?: import("mongoose").AnyObject): Promise<void>;

@@ -30,7 +30,7 @@ import { GetPermissionsDto } from './dto/get-permissions.dto';
 export declare class PermissionsController {
     private readonly permissionsService;
     constructor(permissionsService: PermissionsService);
-    create(createPermissionsDto: CreatePermissionsDto): Promise<import("mongoose").Document<unknown, {}, import("./permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("./permissions.interface").IPermissions & {
+    create(createPermissionsDto: CreatePermissionsDto): Promise<import("mongoose").Document<unknown, {}, import("src/modules/permissions/permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("src/modules/permissions/permissions.interface").IPermissions & {
         _id: import("mongoose").Types.ObjectId;
     }>;
     getPermissions(getRolesDto: GetPermissionsDto): Promise<{
@@ -39,11 +39,9 @@ export declare class PermissionsController {
         result: object;
         statusCode: number;
     }>;
-    findOne(id: string): Promise<import("mongoose").Document<unknown, {}, import("./permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("./permissions.interface").IPermissions & {
+    findOne(id: string): Promise<import("mongoose").Document<unknown, {}, import("src/modules/permissions/permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("src/modules/permissions/permissions.interface").IPermissions & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    update(id: string, updatePermissionsDto: UpdatePermissionsDto): Promise<import("mongoose").FlattenMaps<import("./permissions.interface").IPermissionsDoc> & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
+    update(id: string, updatePermissionsDto: UpdatePermissionsDto): Promise<import("mongoose").ModifyResult<import("src/modules/permissions/permissions.interface").IPermissionsDoc>>;
     remove(id: string): Promise<void>;
 }

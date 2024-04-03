@@ -22,3 +22,9 @@ export declare const azureConfig: {
 export declare const googleConfig: {
     GOOGLE_API_KEY: string;
 };
+export declare const stripeConfig: {
+    STRIPE_PUBLIC_KEY: string;
+    STRIPE_PRIVATE_KEY: string;
+    STRIPE_CURRENCY: string;
+    FRONTEND_URL: string;
+};

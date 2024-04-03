@@ -32,7 +32,7 @@ import { GetPermissionsDto } from './dto/get-permissions.dto';
 export declare class PermissionsService extends BaseAbstractService {
     private readonly permissionsRepository;
     constructor(permissionsRepository: PermissionsRepository, i18nService: I18nService);
-    create(createPermissionsDto: CreatePermissionsDto): Promise<import("mongoose").Document<unknown, {}, import("./permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("./permissions.interface").IPermissions & {
+    create(createPermissionsDto: CreatePermissionsDto): Promise<import("mongoose").Document<unknown, {}, import("src/modules/permissions/permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("src/modules/permissions/permissions.interface").IPermissions & {
         _id: import("mongoose").Types.ObjectId;
     }>;
     getPermissions(getRolesDto: GetPermissionsDto): Promise<{
@@ -41,12 +41,10 @@ export declare class PermissionsService extends BaseAbstractService {
         result: object;
         statusCode: number;
     }>;
-    findOne(id: string): Promise<import("mongoose").Document<unknown, {}, import("./permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("./permissions.interface").IPermissions & {
+    findOne(id: string): Promise<import("mongoose").Document<unknown, {}, import("src/modules/permissions/permissions.interface").IPermissionsDoc> & import("mongoose").Document<any, any, any> & import("src/modules/permissions/permissions.interface").IPermissions & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    update(id: string, updatePermissionsDto: UpdatePermissionsDto): Promise<import("mongoose").FlattenMaps<import("./permissions.interface").IPermissionsDoc> & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
+    update(id: string, updatePermissionsDto: UpdatePermissionsDto): Promise<import("mongoose").ModifyResult<import("src/modules/permissions/permissions.interface").IPermissionsDoc>>;
     remove(id: string): Promise<void>;
     paginate(getPermissionsDto: GetPermissionsDto): Promise<{
         success: boolean;

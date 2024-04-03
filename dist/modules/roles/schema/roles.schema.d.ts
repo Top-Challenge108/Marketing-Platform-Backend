@@ -32,24 +32,24 @@ declare const RolesSchema: mongoose.Schema<any, mongoose.Model<any, any, any, an
 } & {
     active: boolean;
     permissions: string[];
-    name?: string;
     description?: string;
+    name?: string;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
     active: boolean;
     permissions: string[];
-    name?: string;
     description?: string;
+    name?: string;
 }>> & mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
     active: boolean;
     permissions: string[];
-    name?: string;
     description?: string;
+    name?: string;
 }> & {
     _id: mongoose.Types.ObjectId;
 }>;

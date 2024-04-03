@@ -63,9 +63,7 @@ export declare class UserService extends BaseAbstractService {
     getUsersArg(getUserDto: GetUserDto): Promise<any>;
     findOneById(_id: string): Promise<IUser>;
     create(createTodoDto: any): Promise<IUser>;
-    updateOneById(_id: string, updateOneTodoDto: any): Promise<mongoose.FlattenMaps<import("./interface/user.schema.interface").UserDocument> & {
-        _id: mongoose.Types.ObjectId;
-    }>;
+    updateOneById(_id: string, updateOneTodoDto: any): Promise<mongoose.ModifyResult<import("./interface/user.schema.interface").UserDocument>>;
     deleteOneById(_id: string): Promise<mongoose.mongo.DeleteResult>;
     getProfile(user: IJwtPayload): Promise<{
         success: boolean;
