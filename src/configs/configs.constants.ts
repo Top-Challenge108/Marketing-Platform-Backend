@@ -32,3 +32,10 @@ export const azureConfig = {
 export const googleConfig = {
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
 };
+
+export const stripeConfig = {
+  STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+  STRIPE_PRIVATE_KEY: process.env.STRIPE_PRIVATE_KEY,
+  STRIPE_CURRENCY: process.env.STRIPE_CURRENCY,
+  FRONTEND_URL: process.env.FRONTEND_URL,
+};
