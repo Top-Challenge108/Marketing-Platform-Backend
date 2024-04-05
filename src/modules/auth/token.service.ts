@@ -14,7 +14,7 @@ import { UserService } from '../user/user.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { IJwtPayload, IJwtRefreshToken } from './payloads/jwt-payload.payload';
 import { LanguageService } from '../language/language.service';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 @Injectable()
 export class TokenService extends BaseAbstractService {
