@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtConfig } from '../../configs/configs.constants';
 import { LanguageModule } from '../language/language.module';
-import { RedisModule } from '../redis/redis.module';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -18,7 +17,6 @@ import { PermissionsModule } from '../permissions/permissions.module';
   imports: [
     forwardRef(() => UserModule),
     PassportModule,
-    RedisModule,
     LanguageModule,
     JwtModule.register({
       secret: JwtConfig.COMMON_API_JWT_SECRET,

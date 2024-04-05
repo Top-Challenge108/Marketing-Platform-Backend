@@ -35,7 +35,7 @@ export interface ICreateUser {
   language: string;
   country?: string;
   role?: string;
-  locationId: mongoose.Types.ObjectId;
+  locationId: string;
   firstName: string;
   lastName: string;
   bio?: string;

@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsArray } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class AddUserRoleDto {
   @ApiProperty()
-  @IsArray()
-  userIds: string[];
+  @IsString()
+  userId: string;
 
   @ApiProperty()
   @IsString()

@@ -29,37 +29,37 @@ import { GetPermissionsDto } from './dto/get-permissions.dto';
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
-  @Post()
-  @ApiOkResponse({ type: ResponsePermissionsDto })
-  create(@Body() createPermissionsDto: CreatePermissionsDto) {
-    return this.permissionsService.create(createPermissionsDto);
-  }
+  //   @Post()
+  //   @ApiOkResponse({ type: ResponsePermissionsDto })
+  //   create(@Body() createPermissionsDto: CreatePermissionsDto) {
+  //     return this.permissionsService.create(createPermissionsDto);
+  //   }
 
-  @Get('/list')
-  @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: [ResponsePermissionsDto] })
-  getPermissions(@Query() getRolesDto: GetPermissionsDto) {
-    return this.permissionsService.getPermissions(getRolesDto);
-  }
+  //   @Get('/list')
+  //   @HttpCode(HttpStatus.OK)
+  //   @ApiOkResponse({ type: [ResponsePermissionsDto] })
+  //   getPermissions(@Query() getRolesDto: GetPermissionsDto) {
+  //     return this.permissionsService.getPermissions(getRolesDto);
+  //   }
 
-  @Get(':id')
-  @ApiOkResponse({ type: ResponsePermissionsDto })
-  findOne(@Param('id') id: string) {
-    return this.permissionsService.findOne(id);
-  }
+  //   @Get(':id')
+  //   @ApiOkResponse({ type: ResponsePermissionsDto })
+  //   findOne(@Param('id') id: string) {
+  //     return this.permissionsService.findOne(id);
+  //   }
 
-  @Patch(':id')
-  @ApiOkResponse({ type: ResponsePermissionsDto })
-  update(
-    @Param('id') id: string,
-    @Body() updatePermissionsDto: UpdatePermissionsDto,
-  ) {
-    return this.permissionsService.update(id, updatePermissionsDto);
-  }
+  //   @Patch(':id')
+  //   @ApiOkResponse({ type: ResponsePermissionsDto })
+  //   update(
+  //     @Param('id') id: string,
+  //     @Body() updatePermissionsDto: UpdatePermissionsDto,
+  //   ) {
+  //     return this.permissionsService.update(id, updatePermissionsDto);
+  //   }
 
-  @Delete(':id')
-  @ApiOkResponse()
-  remove(@Param('id') id: string) {
-    return this.permissionsService.remove(id);
-  }
+  //   @Delete(':id')
+  //   @ApiOkResponse()
+  //   remove(@Param('id') id: string) {
+  //     return this.permissionsService.remove(id);
+  //   }
 }

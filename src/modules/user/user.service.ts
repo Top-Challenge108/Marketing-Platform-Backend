@@ -1,46 +1,36 @@
-import mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { I18nService } from 'nestjs-i18n';
-import { IDDto } from './dto/id.dto';
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   LanguageCode,
-  SasPermission,
   StatusCode,
   TypeStatus,
 } from '../../common/common.constants';
-import { ICreateUser, IUser } from './interface/user.schema.interface';
-import { UserRepository } from './user.repository';
 import { BaseAbstractService } from '../../base/base.abstract.service';
 import { GetUserDto } from './dto/get-users.dto';
-import { EditUserInfoDto } from './dto/edit-user-info.dto';
-import { ChangeStatusDto } from './dto/change-status.dto';
 import { IJwtPayload } from '../auth/payloads/jwt-payload.payload';
-import { SearchSortDto } from '../../common/pagination.dto';
 import {
   decodePassword,
-  getPlaceDetails,
   getSasUrl,
   validateSasPermission,
 } from '../../common/helpers';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { RolesService } from '../roles/roles.service';
-import { IdsDto } from '../roles/dto/ids.dto';
-import { UserActiveDto } from './dto/user-active.dto';
 import { LanguageService } from '../language/language.service';
 import { PutObjectDto } from './dto/put-object.dto';
 import { TokenService } from '../auth/token.service';
 import { LocationService } from '../location/location.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindOneOptions, In, Repository } from 'typeorm';
+import { UserEntity } from './entities/user.entity';
+import { ICreateUser } from './interface/user.schema.interface';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class UserService extends BaseAbstractService {
   constructor(
-    private readonly userRepository: UserRepository,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
     i18nService: I18nService,
     private readonly rolesService: RolesService,
     private readonly languageService: LanguageService,
@@ -59,15 +49,11 @@ export class UserService extends BaseAbstractService {
     };
   }
 
-  async findUserByEmail(email: string): Promise<IUser> {
+  async findUserByEmail(email: string): Promise<UserEntity> {
     return this.userRepository.findOne({
-      email,
-    });
-  }
-
-  async findUserByGoogleId(googleId: string): Promise<IUser> {
-    return this.userRepository.findOne({
-      googleId,
+      where: {
+        email,
+      },
     });
   }
 
@@ -75,10 +61,10 @@ export class UserService extends BaseAbstractService {
     user: IJwtPayload,
     changePasswordDto: ChangePasswordDto,
   ) {
-    const { _id, language } = user;
+    const { id, language } = user;
     const lang = language;
     const { oldPassword, newPassword, deviceId } = changePasswordDto;
-    const userData = await this.userRepository.findById(_id);
+    const userData = await this.userRepository.findOneBy({ id });
     if (!userData) {
       const result = await this.formatOutputData(
         {
@@ -136,9 +122,9 @@ export class UserService extends BaseAbstractService {
     userData.password = hashPassword.hashPassword;
     userData.salt = hashPassword.salt;
     userData.lastUpdatePassword = new Date();
-    await userData.save();
+    await this.userRepository.save(userData);
     const newToken = await this.tokenService.createTokenLogin(
-      userData._id.toString(),
+      userData.id.toString(),
       deviceId,
     );
 
@@ -156,7 +142,7 @@ export class UserService extends BaseAbstractService {
 
   async getUsers(getUserDto: GetUserDto): Promise<any> {
     const { sortBy } = getUserDto;
-    const queryParam = ['_id', 'fullName', 'email', 'phone'];
+    // const queryParam = ['_id', 'fullName', 'email', 'phone'];
     const options = {
       select:
         'email firstName lastName phone status joinDate location company locationId',
@@ -182,445 +168,415 @@ export class UserService extends BaseAbstractService {
       }
     }
     options['sort'] = { ...options['sort'], createdAt: 'asc' };
-    const users = await this.userRepository.queryList(
-      getUserDto,
-      options,
-      conditions,
-      queryParam,
-    );
-    return this.formatOutputData(
-      {
-        key: users
-          ? `translate.GET_LIST_USERS_SUCCESSFULLY`
-          : `translate.GET_LIST_USERS_FAIL`,
-        lang: LanguageCode.United_States,
-      },
-      {
-        statusCode: users
-          ? StatusCode.GET_LIST_USERS_SUCCESSFULLY
-          : StatusCode.GET_LIST_USERS_FAIL,
-        data: users,
-      },
-    );
+    // const users = await this.userRepository.find(
+    //   getUserDto,
+    //   options,
+    //   conditions,
+    //   queryParam,
+    // );
+    // return this.formatOutputData(
+    //   {
+    //     key: users
+    //       ? `translate.GET_LIST_USERS_SUCCESSFULLY`
+    //       : `translate.GET_LIST_USERS_FAIL`,
+    //     lang: LanguageCode.United_States,
+    //   },
+    //   {
+    //     statusCode: users
+    //       ? StatusCode.GET_LIST_USERS_SUCCESSFULLY
+    //       : StatusCode.GET_LIST_USERS_FAIL,
+    //     data: users,
+    //   },
+    // );
+    return null;
   }
 
-  async getUsersArg(getUserDto: GetUserDto): Promise<any> {
-    const { placeId, sortBy, status, role } = getUserDto;
-    const queryParam = ['_id', 'fullName', 'email', 'phone'];
-    const options = {
-      select:
-        'email firstName lastName phone status joinDate location company locationId role avatar fullName website bio',
-    };
-    const match = {};
-    if (!sortBy) {
-      getUserDto.sortBy = 'joinDate_asc';
-    }
-    if (status) {
-      match['status'] = status;
-    }
-    const query: any = [
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationId',
-          foreignField: '_id',
-          as: 'location',
-        },
-      },
-      {
-        $lookup: {
-          from: 'user-roles',
-          localField: '_id',
-          foreignField: 'userId',
-          as: 'roles',
-        },
-      },
-      {
-        $lookup: {
-          from: 'roles',
-          localField: 'roles.roleId',
-          foreignField: '_id',
-          as: 'role',
-        },
-      },
-    ];
-    if (role) {
-      match['role.name'] =
-        typeof role === 'string' ? { $in: [role] } : { $in: role };
-    }
-    if (placeId) {
-      const locationData = await getPlaceDetails(placeId);
-      if (!locationData) {
-        const response = await this.formatOutputData(
-          {
-            key: `translate.PLACE_ID_IS_NOT_CORRECT`,
-            lang: LanguageCode.United_States,
-          },
-          {
-            statusCode: StatusCode.PLACE_ID_IS_NOT_CORRECT,
-            data: null,
-          },
-        );
-        throw new HttpException(response, HttpStatus.BAD_REQUEST);
-      }
-      match['location.location'] = {
-        $geoWithin: {
-          $centerSphere: [locationData.location, 20 / 6371],
-        },
-      };
-    }
-    if (getUserDto?.sortBy?.split('_')[0] === 'fullName') {
-      options['sort'] = {
-        firstName: getUserDto?.sortBy?.split('_')[1],
-        lastName: getUserDto?.sortBy?.split('_')[1],
-      };
-    }
-    options['sort'] = { ...options['sort'], createdAt: 'asc' };
-    const users = await this.userRepository.queryListAggregate(
-      getUserDto,
-      options,
-      query,
-      queryParam,
-      match,
-    );
-    for (let index = 0; index < users.data.length; index++) {
-      const user = users.data[index];
-      users.data[index].avatarUrl = !user.avatar
-        ? ''
-        : await getSasUrl(user.avatar, SasPermission.Read, user._id);
-    }
-    return this.formatOutputData(
-      {
-        key: users
-          ? `translate.GET_LIST_USERS_SUCCESSFULLY`
-          : `translate.GET_LIST_USERS_FAIL`,
-        lang: LanguageCode.United_States,
-      },
-      {
-        statusCode: users
-          ? StatusCode.GET_LIST_USERS_SUCCESSFULLY
-          : StatusCode.GET_LIST_USERS_FAIL,
-        data: users,
-      },
-    );
+  //   async getUsersArg(getUserDto: GetUserDto): Promise<any> {
+  //     const { placeId, sortBy, status, role } = getUserDto;
+  //     const queryParam = ['_id', 'fullName', 'email', 'phone'];
+  //     const options = {
+  //       select:
+  //         'email firstName lastName phone status joinDate location company locationId role avatar fullName website bio',
+  //     };
+  //     const match = {};
+  //     if (!sortBy) {
+  //       getUserDto.sortBy = 'joinDate_asc';
+  //     }
+  //     if (status) {
+  //       match['status'] = status;
+  //     }
+  //     const query: any = [
+  //       {
+  //         $lookup: {
+  //           from: 'locations',
+  //           localField: 'locationId',
+  //           foreignField: '_id',
+  //           as: 'location',
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: 'user-roles',
+  //           localField: '_id',
+  //           foreignField: 'userId',
+  //           as: 'roles',
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: 'roles',
+  //           localField: 'roles.roleId',
+  //           foreignField: '_id',
+  //           as: 'role',
+  //         },
+  //       },
+  //     ];
+  //     if (role) {
+  //       match['role.name'] =
+  //         typeof role === 'string' ? { $in: [role] } : { $in: role };
+  //     }
+  //     if (placeId) {
+  //       const locationData = await getPlaceDetails(placeId);
+  //       if (!locationData) {
+  //         const response = await this.formatOutputData(
+  //           {
+  //             key: `translate.PLACE_ID_IS_NOT_CORRECT`,
+  //             lang: LanguageCode.United_States,
+  //           },
+  //           {
+  //             statusCode: StatusCode.PLACE_ID_IS_NOT_CORRECT,
+  //             data: null,
+  //           },
+  //         );
+  //         throw new HttpException(response, HttpStatus.BAD_REQUEST);
+  //       }
+  //       match['location.location'] = {
+  //         $geoWithin: {
+  //           $centerSphere: [locationData.location, 20 / 6371],
+  //         },
+  //       };
+  //     }
+  //     if (getUserDto?.sortBy?.split('_')[0] === 'fullName') {
+  //       options['sort'] = {
+  //         firstName: getUserDto?.sortBy?.split('_')[1],
+  //         lastName: getUserDto?.sortBy?.split('_')[1],
+  //       };
+  //     }
+  //     options['sort'] = { ...options['sort'], createdAt: 'asc' };
+  //     const users = await this.userRepository.queryListAggregate(
+  //       getUserDto,
+  //       options,
+  //       query,
+  //       queryParam,
+  //       match,
+  //     );
+  //     for (let index = 0; index < users.data.length; index++) {
+  //       const user = users.data[index];
+  //       users.data[index].avatarUrl = !user.avatar
+  //         ? ''
+  //         : await getSasUrl(user.avatar, SasPermission.Read, user._id);
+  //     }
+  //     return this.formatOutputData(
+  //       {
+  //         key: users
+  //           ? `translate.GET_LIST_USERS_SUCCESSFULLY`
+  //           : `translate.GET_LIST_USERS_FAIL`,
+  //         lang: LanguageCode.United_States,
+  //       },
+  //       {
+  //         statusCode: users
+  //           ? StatusCode.GET_LIST_USERS_SUCCESSFULLY
+  //           : StatusCode.GET_LIST_USERS_FAIL,
+  //         data: users,
+  //       },
+  //     );
+  //   }
+
+  async findOneById(id: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ id });
   }
 
-  async findOneById(_id: string): Promise<IUser> {
-    return this.userRepository.findOne({ _id });
+  async create(createTodoDto: any): Promise<UserEntity> {
+    return this.userRepository.save(createTodoDto);
   }
 
-  async create(createTodoDto: any): Promise<IUser> {
-    return this.userRepository.create(createTodoDto);
+  async updateOneById(id: string, updateOneTodoDto: any) {
+    return this.userRepository.upsert({ id }, updateOneTodoDto);
   }
 
-  async updateOneById(_id: string, updateOneTodoDto: any) {
-    return this.userRepository.updateOne({ _id }, updateOneTodoDto, {
-      new: true,
-    });
+  async deleteOneById(id: string) {
+    return this.userRepository.softDelete({ id });
   }
 
-  async deleteOneById(_id: string) {
-    return this.userRepository.deleteOne({ _id });
-  }
+  //   async getProfile(user: IJwtPayload) {
+  //     const { id } = user;
 
-  async getProfile(user: IJwtPayload) {
-    const { _id } = user;
+  //     const outPutData = {
+  //       key: `translate.GET_USER_INFORMATION_FAIL`,
+  //       lang: LanguageCode.United_States,
+  //       statusCode: StatusCode.GET_USER_INFORMATION_FAIL,
+  //       data: null,
+  //     };
 
-    const outPutData = {
-      key: `translate.GET_USER_INFORMATION_FAIL`,
-      lang: LanguageCode.United_States,
-      statusCode: StatusCode.GET_USER_INFORMATION_FAIL,
-      data: null,
-    };
+  //     const userInfo = await this.userRepository
+  //       .aggregate([
+  //         {
+  //           $lookup: {
+  //             from: 'user-roles',
+  //             localField: '_id',
+  //             foreignField: 'userId',
+  //             as: 'userRoles',
+  //           },
+  //         },
+  //         {
+  //           $lookup: {
+  //             from: 'roles',
+  //             localField: 'userRoles.roleId',
+  //             foreignField: '_id',
+  //             as: 'roles',
+  //           },
+  //         },
+  //         {
+  //           $lookup: {
+  //             from: 'locations',
+  //             localField: 'locationId',
+  //             foreignField: '_id',
+  //             as: 'location',
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             email: 1,
+  //             firstName: 1,
+  //             lastName: 1,
+  //             phone: 1,
+  //             status: 1,
+  //             joinDate: 1,
+  //             citizenship: 1,
+  //             gender: 1,
+  //             userRoles: 1,
+  //             dob: 1,
+  //             type: 1,
+  //             roles: 1,
+  //             language: 1,
+  //             avatar: 1,
+  //             role: 1,
+  //             company: 1,
+  //             location: 1,
+  //             website: 1,
+  //             bio: 1,
+  //           },
+  //         },
+  //       ])
+  //       .match({
+  //         _id: new mongoose.Types.ObjectId(_id),
+  //       });
+  //     userInfo[0].userRoles = undefined;
+  //     userInfo[0].avatar = !userInfo[0].avatar
+  //       ? ''
+  //       : await getSasUrl(userInfo[0].avatar, SasPermission.Read, _id);
+  //     userInfo[0].location = !userInfo[0].location ? {} : userInfo[0].location[0];
+  //     userInfo[0].language = LanguageCode.United_States;
+  //     if (userInfo.length) {
+  //       outPutData.key = `translate.GET_USER_INFORMATION_SUCCESS`;
+  //       outPutData.statusCode = StatusCode.GET_USER_INFORMATION_SUCCESS;
+  //       outPutData.data = {
+  //         ...userInfo[0],
+  //         roles: userInfo[0].roles.filter((role) => role.active === true),
+  //       };
+  //     }
+  //     return this.formatOutputData(
+  //       {
+  //         key: outPutData.key,
+  //         lang: outPutData.lang,
+  //       },
+  //       {
+  //         statusCode: outPutData.statusCode,
+  //         data: outPutData.data,
+  //       },
+  //     );
+  //   }
 
-    const userInfo = await this.userRepository
-      .aggregate([
-        {
-          $lookup: {
-            from: 'user-roles',
-            localField: '_id',
-            foreignField: 'userId',
-            as: 'userRoles',
-          },
-        },
-        {
-          $lookup: {
-            from: 'roles',
-            localField: 'userRoles.roleId',
-            foreignField: '_id',
-            as: 'roles',
-          },
-        },
-        {
-          $lookup: {
-            from: 'locations',
-            localField: 'locationId',
-            foreignField: '_id',
-            as: 'location',
-          },
-        },
-        {
-          $project: {
-            email: 1,
-            firstName: 1,
-            lastName: 1,
-            phone: 1,
-            status: 1,
-            joinDate: 1,
-            citizenship: 1,
-            gender: 1,
-            userRoles: 1,
-            dob: 1,
-            type: 1,
-            roles: 1,
-            language: 1,
-            avatar: 1,
-            role: 1,
-            company: 1,
-            location: 1,
-            website: 1,
-            bio: 1,
-          },
-        },
-      ])
-      .match({
-        _id: new mongoose.Types.ObjectId(_id),
-      });
-    userInfo[0].userRoles = undefined;
-    userInfo[0].avatar = !userInfo[0].avatar
-      ? ''
-      : await getSasUrl(userInfo[0].avatar, SasPermission.Read, _id);
-    userInfo[0].location = !userInfo[0].location ? {} : userInfo[0].location[0];
-    userInfo[0].language = LanguageCode.United_States;
-    if (userInfo.length) {
-      outPutData.key = `translate.GET_USER_INFORMATION_SUCCESS`;
-      outPutData.statusCode = StatusCode.GET_USER_INFORMATION_SUCCESS;
-      outPutData.data = {
-        ...userInfo[0],
-        roles: userInfo[0].roles.filter((role) => role.active === true),
-      };
-    }
-    return this.formatOutputData(
-      {
-        key: outPutData.key,
-        lang: outPutData.lang,
+  async getUserInformationById(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
       },
-      {
-        statusCode: outPutData.statusCode,
-        data: outPutData.data,
-      },
-    );
-  }
-
-  async getUserInformationById(id: string): Promise<IUser> {
-    const user = await this.userRepository
-      .aggregate([
-        {
-          $lookup: {
-            from: 'user-roles',
-            localField: '_id',
-            foreignField: 'userId',
-            as: 'userRoles',
-          },
-        },
-        {
-          $project: {
-            email: 1,
-            firstName: 1,
-            lastName: 1,
-            phone: 1,
-            status: 1,
-            joinDate: 1,
-            citizenship: 1,
-            gender: 1,
-            userRoles: 1,
-            dob: 1,
-            type: 1,
-            lastUpdatePassword: 1,
-            language: 1,
-            avatar: 1,
-          },
-        },
-      ])
-      .match({
-        _id: new mongoose.Types.ObjectId(id),
-      });
-    user[0].avatar = !user[0].avatar
-      ? ''
-      : await getSasUrl(user[0].avatar, SasPermission.Read, id);
-    const listRoleIds = user[0].userRoles.map((userRole) => userRole.roleId);
-    const idsDto: IdsDto = { ids: listRoleIds };
-    const permissions = await this.rolesService.getAllPermissions(idsDto);
-    delete user[0]['userRoles'];
-    return {
-      ...user[0],
-      permissions,
-    };
-  }
-
-  async getUserInformation(iddto: IDDto) {
-    const { id } = iddto;
-    const outPutData = {
-      key: `translate.USER_NOT_FOUND`,
-      lang: LanguageCode.United_States,
-      statusCode: StatusCode.USER_NOT_FOUND,
-      data: null,
-    };
-    const userInfo = await this.userRepository
-      .aggregate([
-        {
-          $lookup: {
-            from: 'user-roles',
-            localField: '_id',
-            foreignField: 'userId',
-            as: 'userRoles',
-          },
-        },
-        {
-          $lookup: {
-            from: 'roles',
-            localField: 'userRoles.roleId',
-            foreignField: '_id',
-            as: 'roles',
-          },
-        },
-        {
-          $lookup: {
-            from: 'locations',
-            localField: 'locationId',
-            foreignField: '_id',
-            as: 'location',
-          },
-        },
-        {
-          $project: {
-            email: 1,
-            firstName: 1,
-            lastName: 1,
-            phone: 1,
-            status: 1,
-            joinDate: 1,
-            citizenship: 1,
-            gender: 1,
-            userRoles: 1,
-            dob: 1,
-            type: 1,
-            roles: 1,
-            avatar: 1,
-            location: 1,
-          },
-        },
-        { $unset: 'userRoles' },
-      ])
-      .match({
-        _id: new mongoose.Types.ObjectId(id),
-      });
-
-    if (!userInfo.length) {
-      const response = await this.formatOutputData(
-        {
-          key: outPutData.key,
-          lang: outPutData.lang,
-        },
-        {
-          statusCode: outPutData.statusCode,
-          data: outPutData.data,
-        },
-      );
-      throw new HttpException(response, HttpStatus.NOT_FOUND);
-    }
-    userInfo[0].avatar = !userInfo[0].avatar
-      ? ''
-      : await getSasUrl(userInfo[0].avatar, SasPermission.Read, id);
-    userInfo[0].location = !userInfo[0].location ? {} : userInfo[0].location[0];
-    outPutData.key = `translate.GET_USER_DETAILS_SUCCESS`;
-    outPutData.statusCode = StatusCode.GET_USER_DETAILS_SUCCESS;
-    outPutData.data = {
-      ...userInfo[0],
-    };
-
-    return this.formatOutputData(
-      {
-        key: outPutData.key,
-        lang: outPutData.lang,
-      },
-      {
-        statusCode: outPutData.statusCode,
-        data: outPutData.data,
-      },
-    );
-  }
-
-  async paginate(getUserDto: GetUserDto) {
-    const { limit, page } = getUserDto;
-    return this.formatOutputData(
-      {
-        key: `translate.GET_LIST_USERS_SUCCESSFULLY`,
-        lang: LanguageCode.Vn,
-      },
-      {
-        statusCode: StatusCode.GET_LIST_USERS_SUCCESSFULLY,
-        data: await this.userRepository.paginate(
-          {
-            /* query */
-          },
-          { limit, page },
-        ),
-      },
-    );
-  }
-
-  async aggregatePaginate(getUserDto: GetUserDto) {
-    const { limit, page } = getUserDto;
-    return this.userRepository.aggregatePaginate(
-      [
-        /* query aggregate */
+      relations: [
+        'userRoles',
+        'userRoles.role',
+        'locations',
+        'locations.location',
+        'locations',
       ],
-      { limit, page },
-    );
+    });
+
+    return user;
   }
 
-  async getListUserActiveByRole(userActiveDto: UserActiveDto, lang: string) {
-    const { roleId } = userActiveDto;
-    const result: any = await this.userRepository.findUserActive(userActiveDto);
-    const users = result.data;
+  //   async getUserInformation(iddto: IDDto) {
+  //     const { id } = iddto;
+  //     const outPutData = {
+  //       key: `translate.USER_NOT_FOUND`,
+  //       lang: LanguageCode.United_States,
+  //       statusCode: StatusCode.USER_NOT_FOUND,
+  //       data: null,
+  //     };
+  //     const userInfo = await this.userRepository
+  //       .aggregate([
+  //         {
+  //           $lookup: {
+  //             from: 'user-roles',
+  //             localField: '_id',
+  //             foreignField: 'userId',
+  //             as: 'userRoles',
+  //           },
+  //         },
+  //         {
+  //           $lookup: {
+  //             from: 'roles',
+  //             localField: 'userRoles.roleId',
+  //             foreignField: '_id',
+  //             as: 'roles',
+  //           },
+  //         },
+  //         {
+  //           $lookup: {
+  //             from: 'locations',
+  //             localField: 'locationId',
+  //             foreignField: '_id',
+  //             as: 'location',
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             email: 1,
+  //             firstName: 1,
+  //             lastName: 1,
+  //             phone: 1,
+  //             status: 1,
+  //             joinDate: 1,
+  //             citizenship: 1,
+  //             gender: 1,
+  //             userRoles: 1,
+  //             dob: 1,
+  //             type: 1,
+  //             roles: 1,
+  //             avatar: 1,
+  //             location: 1,
+  //           },
+  //         },
+  //         { $unset: 'userRoles' },
+  //       ])
+  //       .match({
+  //         _id: new mongoose.Types.ObjectId(id),
+  //       });
 
-    for (let i = 0; i < users.length; i++) {
-      const checkUserExist = await this.rolesService.checkUserExist(
-        users[i]._id.toString(),
-        roleId,
-      );
-      const user = {
-        _id: users[i]._id,
-        fullName: users[i].firstName.trim() + ' ' + users[i].lastName.trim(),
-        status: users[i].status,
-      };
-      let isExist = true;
-      if (!checkUserExist) {
-        isExist = false;
-      }
-      users[i] = {
-        ...user,
-        isExist,
-      };
-    }
-    result.data = users;
+  //     if (!userInfo.length) {
+  //       const response = await this.formatOutputData(
+  //         {
+  //           key: outPutData.key,
+  //           lang: outPutData.lang,
+  //         },
+  //         {
+  //           statusCode: outPutData.statusCode,
+  //           data: outPutData.data,
+  //         },
+  //       );
+  //       throw new HttpException(response, HttpStatus.NOT_FOUND);
+  //     }
+  //     userInfo[0].avatar = !userInfo[0].avatar
+  //       ? ''
+  //       : await getSasUrl(userInfo[0].avatar, SasPermission.Read, id);
+  //     userInfo[0].location = !userInfo[0].location ? {} : userInfo[0].location[0];
+  //     outPutData.key = `translate.GET_USER_DETAILS_SUCCESS`;
+  //     outPutData.statusCode = StatusCode.GET_USER_DETAILS_SUCCESS;
+  //     outPutData.data = {
+  //       ...userInfo[0],
+  //     };
 
-    return this.formatOutputData(
-      {
-        key: result
-          ? `translate.GET_LIST_USERS_SUCCESSFULLY`
-          : `translate.GET_LIST_USERS_FAIL`,
-        lang: lang || LanguageCode.United_States,
-      },
-      {
-        statusCode: result
-          ? StatusCode.GET_LIST_USERS_SUCCESSFULLY
-          : StatusCode.GET_LIST_USERS_FAIL,
-        data: result,
-      },
-    );
-  }
+  //     return this.formatOutputData(
+  //       {
+  //         key: outPutData.key,
+  //         lang: outPutData.lang,
+  //       },
+  //       {
+  //         statusCode: outPutData.statusCode,
+  //         data: outPutData.data,
+  //       },
+  //     );
+  //   }
+
+  //   async paginate(getUserDto: GetUserDto) {
+  //     const { limit, page } = getUserDto;
+  //     return this.formatOutputData(
+  //       {
+  //         key: `translate.GET_LIST_USERS_SUCCESSFULLY`,
+  //         lang: LanguageCode.Vn,
+  //       },
+  //       {
+  //         statusCode: StatusCode.GET_LIST_USERS_SUCCESSFULLY,
+  //         data: await this.userRepository.paginate(
+  //           {
+  //             /* query */
+  //           },
+  //           { limit, page },
+  //         ),
+  //       },
+  //     );
+  //   }
+
+  //   async aggregatePaginate(getUserDto: GetUserDto) {
+  //     const { limit, page } = getUserDto;
+  //     return this.userRepository.aggregatePaginate(
+  //       [
+  //         /* query aggregate */
+  //       ],
+  //       { limit, page },
+  //     );
+  //   }
+
+  //   async getListUserActiveByRole(userActiveDto: UserActiveDto, lang: string) {
+  //     const { roleId } = userActiveDto;
+  //     const result: any = await this.userRepository.findUserActive(userActiveDto);
+  //     const users = result.data;
+
+  //     for (let i = 0; i < users.length; i++) {
+  //       const checkUserExist = await this.rolesService.checkUserExist(
+  //         users[i]._id.toString(),
+  //         roleId,
+  //       );
+  //       const user = {
+  //         _id: users[i]._id,
+  //         fullName: users[i].firstName.trim() + ' ' + users[i].lastName.trim(),
+  //         status: users[i].status,
+  //       };
+  //       let isExist = true;
+  //       if (!checkUserExist) {
+  //         isExist = false;
+  //       }
+  //       users[i] = {
+  //         ...user,
+  //         isExist,
+  //       };
+  //     }
+  //     result.data = users;
+
+  //     return this.formatOutputData(
+  //       {
+  //         key: result
+  //           ? `translate.GET_LIST_USERS_SUCCESSFULLY`
+  //           : `translate.GET_LIST_USERS_FAIL`,
+  //         lang: lang || LanguageCode.United_States,
+  //       },
+  //       {
+  //         statusCode: result
+  //           ? StatusCode.GET_LIST_USERS_SUCCESSFULLY
+  //           : StatusCode.GET_LIST_USERS_FAIL,
+  //         data: result,
+  //       },
+  //     );
+  //   }
 
   isValidDate(dob) {
     if (!dob) {
@@ -638,166 +594,172 @@ export class UserService extends BaseAbstractService {
     return arrayDate[1] == editDate.getMonth() + 1;
   }
 
-  async editUserInformation(
-    user: IJwtPayload,
-    editUserInfoDto: EditUserInfoDto,
-  ) {
-    const { _id } = user;
-    let locationId;
-    const outPutData = {
-      key: `translate.UPDATE_USER_INFORMATION_FAIL`,
-      lang: LanguageCode.United_States,
-      statusCode: StatusCode.UPDATE_USER_INFORMATION_FAIL,
-      data: null,
-    };
-    const userExisted = await this.findOneById(_id);
-    if (editUserInfoDto.placeId) {
-      const location = await getPlaceDetails(editUserInfoDto.placeId);
-      if (!location) {
-        const response = await this.formatOutputData(
-          {
-            key: `translate.PLACE_ID_IS_NOT_CORRECT`,
-            lang: LanguageCode.United_States,
-          },
-          {
-            statusCode: StatusCode.PLACE_ID_IS_NOT_CORRECT,
-            data: null,
-          },
-        );
-        throw new HttpException(response, HttpStatus.BAD_REQUEST);
-      }
-      const locationData =
-        await this.locationService.findAndCreateLocation(location);
-      locationId = locationData._id;
-    }
-    const editUser = await this.userRepository.findByIdAndUpdate(_id, {
-      ...editUserInfoDto,
-      lastName: editUserInfoDto.lastName
-        ? editUserInfoDto.lastName
-        : userExisted.lastName,
-      firstName: editUserInfoDto.firstName
-        ? editUserInfoDto.firstName
-        : userExisted.firstName,
-      company: editUserInfoDto.company
-        ? editUserInfoDto.company
-        : userExisted.company,
-      phone: editUserInfoDto.phone ? editUserInfoDto.phone : userExisted.phone,
-      bio: editUserInfoDto.bio ? editUserInfoDto.bio : userExisted.bio,
-      locationId: editUserInfoDto.placeId ? locationId : userExisted.locationId,
-      avatar: editUserInfoDto.avatar
-        ? editUserInfoDto.avatar
-        : userExisted.avatar,
-    });
+  //   async editUserInformation(
+  //     user: IJwtPayload,
+  //     editUserInfoDto: EditUserInfoDto,
+  //   ) {
+  //     const { _id } = user;
+  //     let locationId;
+  //     const outPutData = {
+  //       key: `translate.UPDATE_USER_INFORMATION_FAIL`,
+  //       lang: LanguageCode.United_States,
+  //       statusCode: StatusCode.UPDATE_USER_INFORMATION_FAIL,
+  //       data: null,
+  //     };
+  //     const userExisted = await this.findOneById(_id);
+  //     if (editUserInfoDto.placeId) {
+  //       const location = await getPlaceDetails(editUserInfoDto.placeId);
+  //       if (!location) {
+  //         const response = await this.formatOutputData(
+  //           {
+  //             key: `translate.PLACE_ID_IS_NOT_CORRECT`,
+  //             lang: LanguageCode.United_States,
+  //           },
+  //           {
+  //             statusCode: StatusCode.PLACE_ID_IS_NOT_CORRECT,
+  //             data: null,
+  //           },
+  //         );
+  //         throw new HttpException(response, HttpStatus.BAD_REQUEST);
+  //       }
+  //       const locationData =
+  //         await this.locationService.findAndCreateLocation(location);
+  //       locationId = locationData._id;
+  //     }
+  //     const editUser = await this.userRepository.findByIdAndUpdate(_id, {
+  //       ...editUserInfoDto,
+  //       lastName: editUserInfoDto.lastName
+  //         ? editUserInfoDto.lastName
+  //         : userExisted.lastName,
+  //       firstName: editUserInfoDto.firstName
+  //         ? editUserInfoDto.firstName
+  //         : userExisted.firstName,
+  //       company: editUserInfoDto.company
+  //         ? editUserInfoDto.company
+  //         : userExisted.company,
+  //       phone: editUserInfoDto.phone ? editUserInfoDto.phone : userExisted.phone,
+  //       bio: editUserInfoDto.bio ? editUserInfoDto.bio : userExisted.bio,
+  //       locationId: editUserInfoDto.placeId ? locationId : userExisted.locationId,
+  //       avatar: editUserInfoDto.avatar
+  //         ? editUserInfoDto.avatar
+  //         : userExisted.avatar,
+  //     });
 
-    if (editUser) {
-      outPutData.key = `translate.UPDATE_USER_INFORMATION_SUCCESS`;
-      outPutData.statusCode = StatusCode.UPDATE_USER_INFORMATION_SUCCESS;
-      outPutData.data = {};
-    }
+  //     if (editUser) {
+  //       outPutData.key = `translate.UPDATE_USER_INFORMATION_SUCCESS`;
+  //       outPutData.statusCode = StatusCode.UPDATE_USER_INFORMATION_SUCCESS;
+  //       outPutData.data = {};
+  //     }
 
-    return this.formatOutputData(
-      {
-        key: outPutData.key,
-        lang: outPutData.lang,
-      },
-      {
-        statusCode: outPutData.statusCode,
-        data: outPutData.data,
-      },
-    );
-  }
+  //     return this.formatOutputData(
+  //       {
+  //         key: outPutData.key,
+  //         lang: outPutData.lang,
+  //       },
+  //       {
+  //         statusCode: outPutData.statusCode,
+  //         data: outPutData.data,
+  //       },
+  //     );
+  //   }
 
-  async changeUserStatus(user, idDto: IDDto, changeStatusDto: ChangeStatusDto) {
-    const { id } = idDto;
-    const { language } = user;
-    const lang = language;
+  //   async changeUserStatus(user, idDto: IDDto, changeStatusDto: ChangeStatusDto) {
+  //     const { id } = idDto;
+  //     const { language } = user;
+  //     const lang = language;
 
-    const outPutData = {
-      key: `translate.UPDATE_USER_INFORMATION_FAIL`,
-      lang: lang || LanguageCode.United_States,
-      statusCode: StatusCode.UPDATE_USER_INFORMATION_FAIL,
-      data: null,
-    };
-    try {
-      if (user._id.toString() === id) {
-        outPutData.key = `translate.USER_CANNOT_CHANGE_THEIR_STATUS`;
-        outPutData.statusCode = StatusCode.USER_CANNOT_CHANGE_THEIR_STATUS;
-        throw new BadRequestException();
-      } else {
-        const changeUser = await this.userRepository.findByIdAndUpdate(id, {
-          ...changeStatusDto,
-          lastUpdatePassword:
-            changeStatusDto.status === TypeStatus.ACTIVE
-              ? undefined
-              : new Date(),
-        });
+  //     const outPutData = {
+  //       key: `translate.UPDATE_USER_INFORMATION_FAIL`,
+  //       lang: lang || LanguageCode.United_States,
+  //       statusCode: StatusCode.UPDATE_USER_INFORMATION_FAIL,
+  //       data: null,
+  //     };
+  //     try {
+  //       if (user._id.toString() === id) {
+  //         outPutData.key = `translate.USER_CANNOT_CHANGE_THEIR_STATUS`;
+  //         outPutData.statusCode = StatusCode.USER_CANNOT_CHANGE_THEIR_STATUS;
+  //         throw new BadRequestException();
+  //       } else {
+  //         const changeUser = await this.userRepository.findByIdAndUpdate(id, {
+  //           ...changeStatusDto,
+  //           lastUpdatePassword:
+  //             changeStatusDto.status === TypeStatus.ACTIVE
+  //               ? undefined
+  //               : new Date(),
+  //         });
 
-        if (changeUser) {
-          outPutData.key = `translate.UPDATE_USER_INFORMATION_SUCCESS`;
-          outPutData.statusCode = StatusCode.UPDATE_USER_INFORMATION_SUCCESS;
-          outPutData.data = { ...changeStatusDto };
-        }
-      }
+  //         if (changeUser) {
+  //           outPutData.key = `translate.UPDATE_USER_INFORMATION_SUCCESS`;
+  //           outPutData.statusCode = StatusCode.UPDATE_USER_INFORMATION_SUCCESS;
+  //           outPutData.data = { ...changeStatusDto };
+  //         }
+  //       }
 
-      return this.formatOutputData(
-        {
-          key: outPutData.key,
-          lang: outPutData.lang,
-        },
-        {
-          statusCode: outPutData.statusCode,
-          data: outPutData.data,
-        },
-      );
-    } catch (e) {
-      throw new BadRequestException(
-        await this.formatOutputData(
-          {
-            key: outPutData.key,
-            lang: outPutData.lang,
-          },
-          {
-            statusCode: outPutData.statusCode,
-            data: outPutData.data,
-          },
-        ),
-      );
-    }
-  }
+  //       return this.formatOutputData(
+  //         {
+  //           key: outPutData.key,
+  //           lang: outPutData.lang,
+  //         },
+  //         {
+  //           statusCode: outPutData.statusCode,
+  //           data: outPutData.data,
+  //         },
+  //       );
+  //     } catch (e) {
+  //       throw new BadRequestException(
+  //         await this.formatOutputData(
+  //           {
+  //             key: outPutData.key,
+  //             lang: outPutData.lang,
+  //           },
+  //           {
+  //             statusCode: outPutData.statusCode,
+  //             data: outPutData.data,
+  //           },
+  //         ),
+  //       );
+  //     }
+  //   }
 
-  async createUser(user: ICreateUser): Promise<IUser> {
+  @Transactional()
+  async createUser(user: ICreateUser): Promise<UserEntity> {
     const userData = await this.userRepository.create(user);
+    const userEntity = await this.userRepository.save(userData);
+
     const role = await this.rolesService.getRoleByName(user.role);
+
     await this.rolesService.createUserRole({
-      userIds: [userData._id],
-      roleId: role?._id,
+      userId: userEntity.id,
+      roleId: role.id,
     });
-    return userData;
+    return userEntity;
   }
 
-  async findUserByConditions(conditions: any): Promise<IUser> {
+  async findUserByConditions(
+    conditions: FindOneOptions<UserEntity>,
+  ): Promise<UserEntity> {
     return this.userRepository.findOne(conditions);
   }
 
-  async getListUsersActive(
-    lang: string,
-    searchSortDto: SearchSortDto,
-  ): Promise<any> {
-    const userData = await this.userRepository.getUsersActive(searchSortDto);
+  //   async getListUsersActive(
+  //     lang: string,
+  //     searchSortDto: SearchSortDto,
+  //   ): Promise<any> {
+  //     const userData = await this.userRepository.getUsersActive(searchSortDto);
 
-    return this.formatOutputData(
-      {
-        key: userData
-          ? `translate.GET_LIST_USERS_SUCCESSFULLY`
-          : `translate.GET_LIST_USERS_FAIL`,
-        lang: lang || LanguageCode.United_States,
-      },
-      {
-        statusCode: StatusCode.GET_LIST_USERS_SUCCESSFULLY,
-        data: userData,
-      },
-    );
-  }
+  //     return this.formatOutputData(
+  //       {
+  //         key: userData
+  //           ? `translate.GET_LIST_USERS_SUCCESSFULLY`
+  //           : `translate.GET_LIST_USERS_FAIL`,
+  //         lang: lang || LanguageCode.United_States,
+  //       },
+  //       {
+  //         statusCode: StatusCode.GET_LIST_USERS_SUCCESSFULLY,
+  //         data: userData,
+  //       },
+  //     );
+  //   }
 
   async generateSasUrl(
     putObjectDto: PutObjectDto,
@@ -833,9 +795,9 @@ export class UserService extends BaseAbstractService {
 
   findByIds(ids: string[]) {
     if (!ids.length) return;
-    return this.userRepository.aggregate([]).match({
-      _id: {
-        $in: ids.map((id) => new mongoose.Types.ObjectId(id)),
+    return this.userRepository.find({
+      where: {
+        id: In(ids),
       },
     });
   }

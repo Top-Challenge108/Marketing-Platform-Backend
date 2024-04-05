@@ -1,19 +1,17 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { LocationService } from './location.service';
-import { LOCATION_MODEL, LocationSchema } from './schemas/location.schema';
-import { LocationRepository } from './location.repository';
 import { LocationController } from './location.controller';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { UserModule } from '../user/user.module';
+import { LocationEntity } from './entities/location.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  providers: [LocationService, LocationRepository],
+  providers: [LocationService],
   controllers: [LocationController],
   imports: [
-    MongooseModule.forFeature([
-      { name: LOCATION_MODEL, schema: LocationSchema },
-    ]),
+    TypeOrmModule.forFeature([LocationEntity]),
+
     PermissionsModule,
     forwardRef(() => UserModule),
   ],

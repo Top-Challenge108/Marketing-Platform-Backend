@@ -1,5 +1,5 @@
 export interface IJwtPayload {
-  _id: string;
+  id: string;
   email?: string;
   phone?: string;
   permissions: string[];
@@ -9,7 +9,7 @@ export interface IJwtPayload {
 }
 
 export interface IJwtRefreshToken {
-  _id: string;
+  id: string;
   deviceId: string;
   language?: string;
   lastUpdatePassword: Date;

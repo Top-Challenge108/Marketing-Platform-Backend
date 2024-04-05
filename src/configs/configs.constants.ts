@@ -39,3 +39,12 @@ export const stripeConfig = {
   STRIPE_CURRENCY: process.env.STRIPE_CURRENCY,
   FRONTEND_URL: process.env.FRONTEND_URL,
 };
+
+export const defaultDatabaseConfig = {
+  TYPE: process.env.DB_TYPE,
+  HOST: process.env.DB_HOST,
+  PORT: process.env.DB_PORT,
+  USERNAME: process.env.DB_USERNAME,
+  PASSWORD: process.env.DB_PASSWORD,
+  DATABASE: process.env.DB_DATABASE,
+};

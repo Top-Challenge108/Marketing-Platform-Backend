@@ -2,18 +2,13 @@
 import { Module } from '@nestjs/common';
 import { LanguageService } from './language.service';
 import { LanguageController } from './language.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { LanguagesSchema, LANGUAGES_MODEL } from './schema/language.schema';
-import { LanguagesRepository } from './language.repository';
+import { LanguageEntity } from './entities/langugae.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: LANGUAGES_MODEL, schema: LanguagesSchema },
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([LanguageEntity])],
   controllers: [LanguageController],
-  providers: [LanguagesRepository, LanguageService],
-  exports: [LanguagesRepository, LanguageService],
+  providers: [LanguageService],
+  exports: [LanguageService],
 })
 export class LanguageModule {}

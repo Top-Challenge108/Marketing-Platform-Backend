@@ -11,14 +11,12 @@ import {
   LanguageCode,
 } from '../../../common/common.constants';
 import { LanguageService } from '../../../modules/language/language.service';
-import { RedisService } from '../../../modules/redis/redis.service';
 
 @Injectable()
 export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
   constructor(
     private readonly usersService: UserService,
     private readonly languageService: LanguageService,
-    private readonly redisService: RedisService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -29,11 +27,8 @@ export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
   }
 
   async validate(req: Request, payload: IJwtPayload): Promise<IJwtPayload> {
-    const { _id, deviceId } = payload;
-    const checkLogout = await this.redisService.hGet(
-      `access-token-${_id.toString()}`,
-      deviceId,
-    );
+    const { id } = payload;
+    const checkLogout = true;
     if (!checkLogout) {
       throw new HttpException(
         await this.usersService.formatOutputData(
@@ -46,7 +41,7 @@ export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const user = await this.usersService.findOneById(_id);
+    const user = await this.usersService.findOneById(id);
     if (!user) {
       throw new HttpException(
         await this.usersService.formatOutputData(

@@ -1,42 +1,44 @@
 import { I18nService } from 'nestjs-i18n';
 import { Injectable } from '@nestjs/common';
 import { BaseAbstractService } from '../../base/base.abstract.service';
-import { LocationRepository } from './location.repository';
-import { ILocation } from './interface/location.schema.interface';
 import { LocationDto } from './dto/location.dto';
 import { LanguageCode, StatusCode } from 'src/common/common.constants';
+import { LocationEntity } from './entities/location.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class LocationService extends BaseAbstractService {
   constructor(
     i18nService: I18nService,
-    private readonly locationRepository: LocationRepository,
+    @InjectRepository(LocationEntity)
+    private readonly locationRepository: Repository<LocationEntity>,
   ) {
     super(i18nService);
   }
 
-  async findAndCreateLocation(locationDto: LocationDto): Promise<ILocation> {
+  async findAndCreateLocation(
+    locationDto: LocationDto,
+  ): Promise<LocationEntity> {
     const { placeId } = locationDto;
-    const location = await this.locationRepository.findOne({
+    const location = await this.locationRepository.findOneBy({
       placeId,
     });
     if (!location) {
-      return this.locationRepository.create({
+      const l = this.locationRepository.create({
         ...locationDto,
         location: {
           type: 'Point',
           coordinates: locationDto.location,
         },
       });
+      return this.locationRepository.save(l);
     }
     return location;
   }
 
   async getLocations(): Promise<any> {
-    const locations = await this.locationRepository
-      .findAll()
-      .select('address id placeId latitude longitude')
-      .sort({ address: 1 });
+    const locations = await this.locationRepository.find();
 
     return this.formatOutputData(
       {
@@ -50,7 +52,7 @@ export class LocationService extends BaseAbstractService {
     );
   }
 
-  async findLocationById(id: string): Promise<ILocation> {
-    return this.locationRepository.findById(id);
+  async findLocationById(id: string): Promise<LocationEntity> {
+    return this.locationRepository.findOneBy({ id });
   }
 }

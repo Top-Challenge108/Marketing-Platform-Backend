@@ -9,6 +9,7 @@ import { PermissionDto } from '../common/common.dto';
 import { IJwtPayload } from '../modules/auth/payloads/jwt-payload.payload';
 import { PermissionsService } from '../modules/permissions/permissions.service';
 import { UserService } from '../modules/user/user.service';
+import _ from 'lodash';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -27,8 +28,11 @@ export class RolesGuard implements CanActivate {
     if (permission) {
       const request = context.switchToHttp().getRequest();
       const user: IJwtPayload = request.user;
-      const userInfo = await this.userService.getUserInformationById(user._id);
-      if (!userInfo.permissions.includes(permission.action)) {
+      const userInfo = await this.userService.getUserInformationById(user.id);
+      const permissions = _.union(
+        ...userInfo.roles.map((role) => role.role.permissions),
+      );
+      if (!permissions.includes(permission.action)) {
         return false;
       }
     }
