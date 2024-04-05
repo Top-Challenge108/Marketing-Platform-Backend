@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBooleanString, IsOptional } from 'class-validator';
 import { CommonPaginationDto } from '../../../common/pagination.dto';
-import { ActiveStatus } from 'src/common/common.constants';
+import { ActiveStatus } from '../../../common/common.constants';
 
 export class GetRolesDto extends CommonPaginationDto {
   @ApiProperty({

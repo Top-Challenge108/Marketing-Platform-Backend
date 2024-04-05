@@ -104,6 +104,9 @@ export enum PermissionActions {
   CREATE_NEW_ROLE = 'create_new_role',
   VIEW_ROLE_DETAIL = 'view_role_detail',
   EDIT_ROLE = 'edit_role',
+  CREATE_TOOL = 'create_tool',
+  UPDATE_TOOL = 'delete_tool',
+  DELETE_TOOL = 'delete_tool',
 }
 
 export enum TypeToken {

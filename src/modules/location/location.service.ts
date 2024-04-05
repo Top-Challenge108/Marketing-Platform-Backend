@@ -2,10 +2,10 @@ import { I18nService } from 'nestjs-i18n';
 import { Injectable } from '@nestjs/common';
 import { BaseAbstractService } from '../../base/base.abstract.service';
 import { LocationDto } from './dto/location.dto';
-import { LanguageCode, StatusCode } from 'src/common/common.constants';
 import { LocationEntity } from './entities/location.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { LanguageCode, StatusCode } from '../../common/common.constants';
 
 @Injectable()
 export class LocationService extends BaseAbstractService {

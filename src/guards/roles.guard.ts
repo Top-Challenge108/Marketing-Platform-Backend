@@ -30,7 +30,7 @@ export class RolesGuard implements CanActivate {
       const user: IJwtPayload = request.user;
       const userInfo = await this.userService.getUserInformationById(user.id);
       const permissions = _.union(
-        ...userInfo.roles.map((role) => role.role.permissions),
+        ...userInfo.userRoles.map((role) => role.role.permissions),
       );
       if (!permissions.includes(permission.action)) {
         return false;

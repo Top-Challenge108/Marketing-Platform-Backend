@@ -67,21 +67,21 @@ export class AuthService extends BaseAbstractService {
     const { salt, hashPassword } = await this.userService.hashPassword(
       decodePassword(password),
     );
-    const data = await getPlaceDetails(placeId);
-    if (!data) {
-      response = await this.formatOutputData(
-        {
-          key: `translate.PLACE_ID_IS_NOT_CORRECT`,
-          lang: LanguageCode.United_States,
-        },
-        {
-          statusCode: StatusCode.PLACE_ID_IS_NOT_CORRECT,
-          data: null,
-        },
-      );
-      throw new HttpException(response, HttpStatus.BAD_REQUEST);
-    }
-    const locationData = await this.locationService.findAndCreateLocation(data);
+    // const data = await getPlaceDetails(placeId);
+    // if (!data) {
+    //   response = await this.formatOutputData(
+    //     {
+    //       key: `translate.PLACE_ID_IS_NOT_CORRECT`,
+    //       lang: LanguageCode.United_States,
+    //     },
+    //     {
+    //       statusCode: StatusCode.PLACE_ID_IS_NOT_CORRECT,
+    //       data: null,
+    //     },
+    //   );
+    //   throw new HttpException(response, HttpStatus.BAD_REQUEST);
+    // }
+    // const locationData = await this.locationService.findAndCreateLocation(data);
     const newUser = await this.userService.createUser({
       email,
       phone,
@@ -90,7 +90,7 @@ export class AuthService extends BaseAbstractService {
       password: hashPassword,
       language: LanguageCode.United_States,
       country,
-      locationId: locationData.id,
+      locationId: null, //locationData.id
       role,
       firstName,
       lastName,

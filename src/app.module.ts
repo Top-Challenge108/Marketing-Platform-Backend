@@ -18,6 +18,8 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { defaultDatabaseConfig } from './configs/configs.constants';
 import { SnakeNamingStrategy } from './snake-naming.strategy';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { SnakeNamingStrategy } from './snake-naming.strategy';
       fallbackLanguage: LanguageCode.United_States,
       parser: I18nJsonParser,
       parserOptions: {
-        path: path.join(__dirname, '/i18n/'),
+        path: path.join(__dirname, '..', '/i18n/'),
         watch: true,
       },
     }),
@@ -33,12 +35,10 @@ import { SnakeNamingStrategy } from './snake-naming.strategy';
       imports: [],
       useFactory: () => {
         const entities = [
-          __dirname + '/../../modules/**/*.entity{.ts,.js}',
-          __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
+          __dirname + '/modules/**/*.entity{.ts,.js}',
+          __dirname + '/modules/**/*.view-entity{.ts,.js}',
         ];
-        const migrations = [
-          __dirname + '/../../database/migrations/*{.ts,.js}',
-        ];
+        const migrations = [__dirname + '/database/migrations/*{.ts,.js}'];
 
         return {
           entities,
@@ -57,15 +57,15 @@ import { SnakeNamingStrategy } from './snake-naming.strategy';
         };
       },
       inject: [],
-      //   dataSourceFactory: (options) => {
-      //     if (!options) {
-      //       throw new Error('Invalid options passed');
-      //     }
+      dataSourceFactory: (options) => {
+        if (!options) {
+          throw new Error('Invalid options passed');
+        }
 
-      //     return Promise.resolve(
-      //       addTransactionalDataSource(new DataSource(options)),
-      //     );
-      //   },
+        return Promise.resolve(
+          addTransactionalDataSource(new DataSource(options)),
+        );
+      },
     }),
     CommandModule,
     DiscoveryModule,

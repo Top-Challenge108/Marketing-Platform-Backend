@@ -15,6 +15,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { IJwtPayload, IJwtRefreshToken } from './payloads/jwt-payload.payload';
 import { LanguageService } from '../language/language.service';
 import _ from 'lodash';
+
 @Injectable()
 export class TokenService extends BaseAbstractService {
   constructor(
@@ -30,7 +31,7 @@ export class TokenService extends BaseAbstractService {
   async createTokenLogin(userId: string, deviceId: string) {
     const userInfo = await this.userService.getUserInformationById(userId);
     const permissions = _.union(
-      ...userInfo.roles.map((role) => role.role.permissions),
+      ...userInfo.userRoles.map((role) => role.role.permissions),
     );
     const accessTokenPayload: IJwtPayload = {
       id: userInfo.id,
@@ -85,7 +86,7 @@ export class TokenService extends BaseAbstractService {
     }
     const userInfo = await this.userService.getUserInformationById(payload.id);
     const permissions = _.union(
-      ...userInfo.roles.map((role) => role.role.permissions),
+      ...userInfo.userRoles.map((role) => role.role.permissions),
     );
     const accessTokenPayload: IJwtPayload = {
       id: userInfo.id,

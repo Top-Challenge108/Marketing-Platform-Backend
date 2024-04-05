@@ -9,9 +9,9 @@ import {
 import { PermissionActions } from '../../common/common.constants';
 import { Permission } from '../../common/permissions.decorator';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
-import { RolesGuard } from 'src/guards/roles.guard';
 import { LocationService } from './location.service';
 import { LocationDto } from './dto/location.dto';
+import { RolesGuard } from '../../guards/roles.guard';
 
 @ApiTags('Locations')
 @Controller('locations')

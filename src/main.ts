@@ -4,10 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import { json, urlencoded } from 'express';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 dotenv.config();
 
 async function bootstrap() {
+  initializeTransactionalContext();
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api');
   const options = new DocumentBuilder()

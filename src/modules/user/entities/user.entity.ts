@@ -1,9 +1,9 @@
 import { Entity, Column, VirtualColumn, OneToMany } from 'typeorm';
 import { TypeStatus, LanguageCode } from '../../../common/common.constants';
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
-import { AutoMap } from '@automapper/classes';
 import { LocationEntity } from '../../location/entities/location.entity';
 import { UserRolesEntity } from '../../roles/entities/user-role.entity';
+import { AutoMap } from '@automapper/classes';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -92,5 +92,5 @@ export class UserEntity extends AbstractEntity {
     nullable: true,
     cascade: true,
   })
-  roles: UserRolesEntity[];
+  userRoles: UserRolesEntity[];
 }

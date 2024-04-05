@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { UserEntity } from '../../user/entities/user.entity';
 import { RoleEntity } from './role.entity';
@@ -7,7 +7,7 @@ import { RoleEntity } from './role.entity';
 export class UserRolesEntity extends AbstractEntity {
   @Column({ name: 'user_id' })
   userId: string;
-  @ManyToOne(() => UserEntity, (user) => user.roles)
+  @ManyToOne(() => UserEntity, (user) => user.userRoles)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 

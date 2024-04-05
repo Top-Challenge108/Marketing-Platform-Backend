@@ -3,6 +3,7 @@ import { I18nService } from 'nestjs-i18n';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   LanguageCode,
+  PermissionActions,
   StatusCode,
   TypeStatus,
 } from '../../common/common.constants';
@@ -402,13 +403,7 @@ export class UserService extends BaseAbstractService {
       where: {
         id,
       },
-      relations: [
-        'userRoles',
-        'userRoles.role',
-        'locations',
-        'locations.location',
-        'locations',
-      ],
+      relations: ['userRoles', 'userRoles.role', 'locations'],
     });
 
     return user;
@@ -726,7 +721,19 @@ export class UserService extends BaseAbstractService {
     const userData = await this.userRepository.create(user);
     const userEntity = await this.userRepository.save(userData);
 
-    const role = await this.rolesService.getRoleByName(user.role);
+    let role = await this.rolesService.getRoleByName(user.role);
+    if (!role) {
+      role = await this.rolesService.create({
+        name: user.role,
+        description: `Role ${user.role}`,
+        active: true,
+        permissions: [
+          PermissionActions.CREATE_TOOL,
+          PermissionActions.UPDATE_TOOL,
+          PermissionActions.DELETE_TOOL,
+        ],
+      });
+    }
 
     await this.rolesService.createUserRole({
       userId: userEntity.id,

@@ -52,6 +52,9 @@ export class AuthController {
   @HttpCode(HttpStatusCode.Ok)
   @Post('sign-up')
   memberSignUp(@Body() signUpDto: SignUpDto): Promise<ResponseLoginDto> {
+    console.log('====================================');
+    console.log('signUpDto', signUpDto);
+    console.log('====================================');
     return this.authService.signUp(signUpDto);
   }
 
