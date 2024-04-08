@@ -10,55 +10,37 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Headers,
   UseGuards,
   Req,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ResponseLoginDto } from './dto/response-login.dto';
 import { SignUpDto } from './dto/sign-up.dto';
-import { HeaderDto } from '../../common/common.dto';
 import { Request } from 'express';
-import {
-  IJwtPayload,
-  IJwtRefreshToken,
-} from '../auth/payloads/jwt-payload.payload';
-import { ResponseDto } from '../../common/common.dto';
-import { LoginDto } from './dto/login-user.dto';
+import { IJwtPayload } from '../auth/payloads/jwt-payload.payload';
+import { HeaderDto, ResponseDto } from '../../common/common.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { LogoutDto } from './dto/logout-user.dto';
-import { LanguageCode } from '../../common/common.constants';
 import { HttpStatusCode } from 'axios';
+import { GoogleSignInDto } from './dto/google-sign-in.dto';
+import { LanguageCode } from '../../common/common.constants';
+import { LoginDto } from './dto/login-user.dto';
 
 @Controller('auth')
 @ApiTags('Auths')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('logout')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('verify'))
-  @HttpCode(HttpStatusCode.Ok)
-  logOut(
-    @Req() req: Request,
-    @Body() logOutDto: LogoutDto,
-  ): Promise<ResponseDto> {
-    return this.authService.logOut(<IJwtPayload>req.user, logOutDto);
-  }
-
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Register new user by email.' })
   @HttpCode(HttpStatusCode.Ok)
   @Post('sign-up')
   memberSignUp(@Body() signUpDto: SignUpDto): Promise<ResponseLoginDto> {
-    console.log('====================================');
-    console.log('signUpDto', signUpDto);
-    console.log('====================================');
     return this.authService.signUp(signUpDto);
   }
 
-  @Post('/sign-in')
+  @Post('/authenticate')
   @ApiOperation({ summary: 'User login by email.' })
   @ApiOkResponse({ type: ResponseLoginDto })
   @HttpCode(HttpStatusCode.Ok)
@@ -72,24 +54,30 @@ export class AuthController {
     );
   }
 
-  @Post('refresh-token')
+  @Post('google-authenticate')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('verifyRefreshToken'))
-  @ApiBearerAuth()
-  @HttpCode(HttpStatusCode.Ok)
-  refreshToken(@Req() req: Request, @Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshToken(
-      <IJwtRefreshToken>req.user,
-      refreshTokenDto,
-    );
+  @ApiOkResponse({
+    type: GoogleSignInDto,
+    description: 'User info with google access token',
+  })
+  async googleLogin(
+    @Body() loginDto: GoogleSignInDto,
+  ): Promise<ResponseLoginDto> {
+    return this.authService.googleAuthenticateUser(loginDto);
   }
 
-  @ApiBearerAuth()
-  @Post('verify-token')
+  @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('verify'))
+  @HttpCode(HttpStatusCode.Ok)
+  refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshToken(refreshTokenDto);
+  }
+
+  @Post('logout')
   @ApiBearerAuth()
-  verifyToken() {
-    return this.authService.verifyToken();
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatusCode.Ok)
+  logOut(@Req() req: Request): Promise<ResponseDto> {
+    return this.authService.logOut(<IJwtPayload>req.user);
   }
 }

@@ -5,24 +5,27 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { UserService } from '../user/user.service';
-import { IJwtPayload, IJwtRefreshToken } from './payloads/jwt-payload.payload';
+import { UserService } from '../user/services/user.service';
+import { IJwtPayload } from './payloads/jwt-payload.payload';
 import { I18nService } from 'nestjs-i18n';
 import { BaseAbstractService } from '../../base/base.abstract.service';
 import {
   LanguageCode,
+  Role,
   StatusCode,
   TypeStatus,
 } from '../../common/common.constants';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ResponseLoginDto } from './dto/response-login.dto';
-import { decodePassword, getPlaceDetails } from '../../common/helpers';
+import { decodePassword } from '../../common/helpers';
 import { LoginDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from './token.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { LogoutDto } from './dto/logout-user.dto';
 import { LocationService } from '../location/location.service';
+import { GoogleSignInDto } from './dto/google-sign-in.dto';
+import { GoogleOAuthService } from '../integration/services/google-oauth.service';
+import { UserTokenService } from '../user/services/user-token.service';
 
 @Injectable()
 export class AuthService extends BaseAbstractService {
@@ -30,8 +33,10 @@ export class AuthService extends BaseAbstractService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly tokenService: TokenService,
+    private readonly userTokenService: UserTokenService,
     private readonly i18nService: I18nService,
     private readonly locationService: LocationService,
+    private readonly googleOAuthService: GoogleOAuthService,
   ) {
     super(i18nService);
   }
@@ -41,8 +46,6 @@ export class AuthService extends BaseAbstractService {
       email = null,
       password,
       phone,
-      role,
-      placeId,
       firstName,
       lastName,
       company,
@@ -50,7 +53,9 @@ export class AuthService extends BaseAbstractService {
     let response;
     let country;
 
-    const userExisted = await this.userService.findUserByEmail(email);
+    const userExisted = await this.userService.findUserByConditions({
+      where: [{ email: email }, { phone: phone }],
+    });
     if (userExisted) {
       response = await this.formatOutputData(
         {
@@ -67,21 +72,7 @@ export class AuthService extends BaseAbstractService {
     const { salt, hashPassword } = await this.userService.hashPassword(
       decodePassword(password),
     );
-    // const data = await getPlaceDetails(placeId);
-    // if (!data) {
-    //   response = await this.formatOutputData(
-    //     {
-    //       key: `translate.PLACE_ID_IS_NOT_CORRECT`,
-    //       lang: LanguageCode.United_States,
-    //     },
-    //     {
-    //       statusCode: StatusCode.PLACE_ID_IS_NOT_CORRECT,
-    //       data: null,
-    //     },
-    //   );
-    //   throw new HttpException(response, HttpStatus.BAD_REQUEST);
-    // }
-    // const locationData = await this.locationService.findAndCreateLocation(data);
+
     const newUser = await this.userService.createUser({
       email,
       phone,
@@ -91,15 +82,12 @@ export class AuthService extends BaseAbstractService {
       language: LanguageCode.United_States,
       country,
       locationId: null, //locationData.id
-      role,
+      role: Role.User,
       firstName,
       lastName,
       company,
     });
-    const token = await this.tokenService.createTokenLogin(
-      newUser.id,
-      'portal',
-    );
+    const token = await this.tokenService.createTokenLogin(newUser, 'portal');
     return this.formatOutputData(
       {
         key: `translate.USER_SIGN_UP_SUCCESSFULLY`,
@@ -108,6 +96,63 @@ export class AuthService extends BaseAbstractService {
       {
         statusCode: StatusCode.USER_SIGN_UP_SUCCESSFULLY,
         data: token,
+      },
+    );
+  }
+
+  async googleAuthenticateUser(loginDto: GoogleSignInDto) {
+    const userInfo = await this.googleOAuthService.getUserDataFromToken(
+      loginDto.token,
+    );
+    // {
+    //     id: "108895746013634241526",
+    //     email: "quangthap9x@gmail.com",
+    //     verified_email: true,
+    //     name: "Thập Lương",
+    //     given_name: "Thập",
+    //     family_name: "Lương",
+    //     picture: "https://lh3.googleusercontent.com/a/ACg8ocLlibyTLWoUpbgAzi5zJ7pq4Iv5wQXIWuCWR-o_CGuh1hZfKZQ=s96-c",
+    //     locale: "vi",
+    //   }
+
+    let response;
+
+    if (!userInfo || (!userInfo.email && !userInfo.id)) {
+      response = await this.formatOutputData(
+        {
+          key: `translate.GOOGLE_TOKEN_INVALID`,
+          lang: LanguageCode.United_States,
+        },
+        {
+          statusCode: StatusCode.GOOGLE_TOKEN_INVALID,
+          data: null,
+        },
+      );
+      throw new HttpException(response, HttpStatus.BAD_REQUEST);
+    }
+
+    const googleUserInfo = await this.userService.upsertUserWithGoogle({
+      email: userInfo.email as string,
+      firstName: userInfo.given_name as string,
+      lastName: userInfo.family_name as string,
+      socialId: userInfo.id as string,
+      avatar: userInfo.picture as string,
+      language: userInfo.locale as string,
+    });
+
+    const responseInfo = await this.tokenService.createTokenLogin(
+      googleUserInfo,
+      'portal',
+    );
+
+    return this.formatOutputData(
+      {
+        key: `translate.USER_SIGN_UP_SUCCESSFULLY`,
+        lang: LanguageCode.United_States,
+      },
+      {
+        statusCode: StatusCode.USER_SIGN_UP_SUCCESSFULLY,
+        data: responseInfo,
       },
     );
   }
@@ -136,8 +181,9 @@ export class AuthService extends BaseAbstractService {
       userData.password,
     );
     if (checkPass) {
+      const userInfo = await this.userService.findUserDto(userData.id);
       const token = await this.tokenService.createTokenLogin(
-        userData.id,
+        userInfo,
         'portal',
       );
       result.key = 'translate.USER_LOGIN_SUCCESSFULLY';
@@ -158,52 +204,41 @@ export class AuthService extends BaseAbstractService {
     }
   }
 
-  async refreshToken(
-    payload: IJwtRefreshToken,
-    refreshTokenDto: RefreshTokenDto,
-  ) {
-    return this.tokenService.refreshToken(payload, refreshTokenDto);
+  async refreshToken(refreshTokenDto: RefreshTokenDto) {
+    return this.tokenService.refreshToken(refreshTokenDto);
   }
 
-  async logOut(user: IJwtPayload, logoutDto: LogoutDto): Promise<any> {
-    // const { deviceId } = logoutDto;
-    const { id, language } = user;
-    const lang = language;
-    const userInfo = await this.userService.findOneById(id);
-
-    if (!userInfo) {
-      throw new HttpException(
-        'Your account has been deactivated',
-        HttpStatus.BAD_REQUEST,
+  async logOut(user: IJwtPayload): Promise<any> {
+    try {
+      const { id, language } = user;
+      const lang = language;
+      await this.userTokenService.revokeTokenOfUser(id);
+      return this.formatOutputData(
+        {
+          key: `translate.YOU_HAVE_BEEN_SUCCESSFULLY_LOGGED_OUT`,
+          lang,
+        },
+        {
+          statusCode: StatusCode.YOU_HAVE_BEEN_SUCCESSFULLY_LOGGED_OUT,
+          data: {},
+        },
       );
+    } catch (error) {
+      const response = await this.formatOutputData(
+        {
+          key: `translate.GOOGLE_TOKEN_INVALID`,
+          lang: LanguageCode.United_States,
+        },
+        {
+          statusCode: StatusCode.UNAUTHORIZED,
+          data: null,
+        },
+      );
+      throw new HttpException(response, StatusCode.UNAUTHORIZED);
     }
-
-    return this.formatOutputData(
-      {
-        key: `translate.YOU_HAVE_BEEN_SUCCESSFULLY_LOGGED_OUT`,
-        lang,
-      },
-      {
-        statusCode: StatusCode.YOU_HAVE_BEEN_SUCCESSFULLY_LOGGED_OUT,
-        data: {},
-      },
-    );
   }
 
   validateSignUp(email = null, phone = null) {
     return (!email && !phone) || (email && phone);
-  }
-
-  async verifyToken(): Promise<any> {
-    return this.formatOutputData(
-      {
-        key: `translate.VERIFY_TOKEN_SUCCESSFULLY`,
-        lang: LanguageCode.United_States,
-      },
-      {
-        statusCode: StatusCode.VERIFY_TOKEN_SUCCESSFULLY,
-        data: {},
-      },
-    );
   }
 }

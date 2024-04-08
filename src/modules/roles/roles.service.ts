@@ -10,12 +10,13 @@ import { CreateRolesDto } from './dto/create-roles.dto';
 import { BaseAbstractService } from '../../base/base.abstract.service';
 import { LanguageCode, StatusCode } from '../../common/common.constants';
 import { IUserRole } from './user-role.interface';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 import { RoleEntity } from './entities/role.entity';
 import { UserRolesEntity } from './entities/user-role.entity';
 import { ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AddUserRoleDto } from './dto/add-user-role.dto';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class RolesService extends BaseAbstractService {
@@ -274,6 +275,7 @@ export class RolesService extends BaseAbstractService {
     return userIds.map((userId) => ({ userId, roleId }));
   }
 
+  @Transactional()
   async createUserRole(addUserRoleDto: AddUserRoleDto) {
     const { userId, roleId } = addUserRoleDto;
     const checkUsers = await this.userService.findOneById(userId);

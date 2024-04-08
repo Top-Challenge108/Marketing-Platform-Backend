@@ -1,9 +1,6 @@
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserService } from './user.service';
-import { AuthenticationGuard } from '../auth/guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { PutObjectDto } from './dto/put-object.dto';
+import { Controller } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { UserService } from './services/user.service';
 
 @ApiTags('Users')
 @Controller('users')
@@ -30,12 +27,12 @@ export class UserController {
   //     return this.userService.getProfile(req.user);
   //   }
 
-  @Get('get-sas-url')
-  @UseGuards(AuthenticationGuard, RolesGuard)
-  @ApiBearerAuth()
-  getUploadSignedUrl(@Query() input: PutObjectDto, @Req() req) {
-    return this.userService.generateSasUrl(input, req.user._id);
-  }
+  //   @Get('get-sas-url')
+  //   @UseGuards(AuthenticationGuard, RolesGuard)
+  //   @ApiBearerAuth()
+  //   getUploadSignedUrl(@Query() input: PutObjectDto, @Req() req) {
+  //     return this.userService.generateSasUrl(input, req.user._id);
+  //   }
 
   //   @Patch()
   //   @UseGuards(AuthenticationGuard, RolesGuard)

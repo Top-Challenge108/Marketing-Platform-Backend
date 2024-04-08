@@ -7,8 +7,7 @@ import { LanguageModule } from '../language/language.module';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { VerifyRefreshTokenStrategy } from './strategies/verify-refresh-token.strategy';
-import { VerifyStrategy } from './strategies/verify.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { TokenService } from './token.service';
 import { LocationModule } from '../location/location.module';
 import { PermissionsModule } from '../permissions/permissions.module';
@@ -24,16 +23,12 @@ import { PermissionsModule } from '../permissions/permissions.module';
         expiresIn: JwtConfig.COMMON_API_JWT_EXPIRES_IN,
       },
     }),
+
     LocationModule,
     PermissionsModule,
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    TokenService,
-    VerifyStrategy,
-    VerifyRefreshTokenStrategy,
-  ],
+  providers: [AuthService, TokenService, JwtStrategy],
   exports: [TokenService],
 })
 export class AuthModule {}

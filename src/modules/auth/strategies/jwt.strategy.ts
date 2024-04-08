@@ -4,16 +4,16 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { IJwtPayload } from '../payloads/jwt-payload.payload';
 import { JwtConfig } from '../../../configs/configs.constants';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../../user/services/user.service';
 import {
   TypeStatus,
   StatusCode,
   LanguageCode,
 } from '../../../common/common.constants';
-import { LanguageService } from '../../../modules/language/language.service';
+import { LanguageService } from '../../language/language.service';
 
 @Injectable()
-export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly usersService: UserService,
     private readonly languageService: LanguageService,
@@ -28,8 +28,21 @@ export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
 
   async validate(req: Request, payload: IJwtPayload): Promise<IJwtPayload> {
     const { id } = payload;
-    const checkLogout = true;
-    if (!checkLogout) {
+    // const checkLogout = true;
+    // if (!checkLogout) {
+    //   throw new HttpException(
+    //     await this.usersService.formatOutputData(
+    //       {
+    //         lang: LanguageCode.United_States,
+    //         key: 'translate.UNAUTHORIZED',
+    //       },
+    //       { data: null, statusCode: StatusCode.UNAUTHORIZED },
+    //     ),
+    //     HttpStatus.UNAUTHORIZED,
+    //   );
+    // }
+    const user = await this.usersService.findOneById(id);
+    if (!user) {
       throw new HttpException(
         await this.usersService.formatOutputData(
           {
@@ -41,19 +54,7 @@ export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const user = await this.usersService.findOneById(id);
-    if (!user) {
-      throw new HttpException(
-        await this.usersService.formatOutputData(
-          {
-            lang: LanguageCode.United_States,
-            key: 'translate.USER_NOT_FOUND',
-          },
-          { data: null, statusCode: StatusCode.USER_NOT_FOUND },
-        ),
-        HttpStatus.NOT_FOUND,
-      );
-    }
+
     if (
       user.lastUpdatePassword &&
       user.lastUpdatePassword.getTime() !==
@@ -73,6 +74,7 @@ export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
         HttpStatus.UNAUTHORIZED,
       );
     }
+
     if (user.status !== TypeStatus.ACTIVE) {
       throw new HttpException(
         await this.usersService.formatOutputData(
@@ -85,6 +87,7 @@ export class VerifyStrategy extends PassportStrategy(Strategy, 'verify') {
         HttpStatus.FORBIDDEN,
       );
     }
+
     payload.language = LanguageCode.United_States;
 
     return payload;

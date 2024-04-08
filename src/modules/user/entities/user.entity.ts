@@ -4,6 +4,7 @@ import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { LocationEntity } from '../../location/entities/location.entity';
 import { UserRolesEntity } from '../../roles/entities/user-role.entity';
 import { AutoMap } from '@automapper/classes';
+import { UserTokenEntity } from './user-token.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -52,7 +53,7 @@ export class UserEntity extends AbstractEntity {
   gender: string;
 
   @AutoMap()
-  @Column()
+  @Column({ nullable: true, default: null })
   salt: string;
 
   @AutoMap()
@@ -75,6 +76,12 @@ export class UserEntity extends AbstractEntity {
   @Column({ nullable: true, default: null })
   company: string;
 
+  @Column({ nullable: true })
+  socialId?: string;
+
+  @Column({ nullable: true, length: 255 })
+  stripeCustomerId?: string;
+
   @AutoMap()
   @VirtualColumn({
     query: (alias) =>
@@ -93,4 +100,9 @@ export class UserEntity extends AbstractEntity {
     cascade: true,
   })
   userRoles: UserRolesEntity[];
+
+  @OneToMany(() => UserTokenEntity, (token) => token.user, {
+    nullable: true,
+  })
+  tokens: UserTokenEntity[];
 }

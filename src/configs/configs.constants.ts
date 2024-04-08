@@ -48,3 +48,8 @@ export const defaultDatabaseConfig = {
   PASSWORD: process.env.DB_PASSWORD,
   DATABASE: process.env.DB_DATABASE,
 };
+
+export const googleOAuthConfig = {
+  CLIENT_ID: process.env.CLIENT_ID,
+  CLIENT_SECRET: process.env.CLIENT_SECRET,
+};

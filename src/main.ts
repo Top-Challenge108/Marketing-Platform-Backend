@@ -13,10 +13,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api');
   const options = new DocumentBuilder()
-    .setTitle('Girs API Documentation')
-    .setDescription('The Girs API description')
+    .setTitle('App API Documentation')
+    .setDescription('The App API description')
     .setVersion('1.0')
-    .addTag('girs-api')
+    .addTag('App-api')
     .addBearerAuth({
       type: 'http',
       name: 'Authorization',

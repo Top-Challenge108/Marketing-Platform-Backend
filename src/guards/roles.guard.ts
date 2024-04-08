@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { PermissionDto } from '../common/common.dto';
 import { IJwtPayload } from '../modules/auth/payloads/jwt-payload.payload';
 import { PermissionsService } from '../modules/permissions/permissions.service';
-import { UserService } from '../modules/user/user.service';
+import { UserService } from '../modules/user/services/user.service';
 import * as _ from 'lodash';
 
 @Injectable()

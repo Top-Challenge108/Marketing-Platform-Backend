@@ -3,18 +3,16 @@ import { Transform } from 'class-transformer';
 import {
   Matches,
   IsString,
-  IsEnum,
   IsBase64,
   MinLength,
   IsDefined,
   NotEquals,
 } from 'class-validator';
 import { ResponseDto } from '../../../common/common.dto';
-import { Role } from '../../../common/common.constants';
 
 export class SignUpDto {
   @ApiProperty({
-    example: 'girs@gmail.com',
+    example: 'app@gmail.com',
   })
   @IsString()
   @Transform((data) => data.value?.trim().toLowerCase())
@@ -54,24 +52,9 @@ export class SignUpDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({
-    required: true,
-    enum: Role,
-    default: Role.Agent,
-    example: Role.Agent,
-  })
-  @IsEnum(Role)
-  role: string;
-
   @ApiProperty()
   @IsString()
   company: string;
-
-  @ApiProperty({
-    example: 'ChIJIaGbBBhawokRUmbgNsUmr-s',
-  })
-  @IsString()
-  placeId: string;
 }
 
 export class ResponseSignUpDto extends ResponseDto {}

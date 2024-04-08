@@ -17,7 +17,7 @@ export class LoginDto {
   @NotEquals(null)
   @Transform((data) => data.value?.trim())
   @ApiProperty({
-    example: 'girs@gmail.com',
+    example: 'app@gmail.com',
   })
   @Matches(
     /^([^@\s\."'<>\(\)\[\]\{\}\\/,:;]+\.)*[^@\s\."'<>\(\)\[\]\{\}\\/,:;]+@[^@\s\._"'<>\(\)\[\]\{\}\\/,:;]+(\.[^@\s\."'<>\(\)\[\]\{\}\\/,:;]+)+$/m,

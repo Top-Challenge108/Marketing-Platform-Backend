@@ -15,6 +15,7 @@ export enum Role {
   Lender = 'Lender',
   Vendor = 'Vendor',
   Builder = 'Builder',
+  User = 'User',
 }
 
 export enum StatusCode {
@@ -88,6 +89,7 @@ export enum StatusCode {
   LOCATION_IS_NOT_CORRECT = 1050,
   PLACE_ID_IS_NOT_CORRECT = 1051,
   VERIFY_TOKEN_SUCCESSFULLY = 1052,
+  GOOGLE_TOKEN_INVALID = 1053,
 }
 
 export enum TypeStatus {

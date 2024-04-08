@@ -1,35 +1,43 @@
+import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-export class UserResponseDto {
+export class UserDto {
+  @AutoMap()
   @ApiProperty()
-  _id: string;
+  id: string;
 
+  @AutoMap()
   @ApiProperty()
   email: string;
 
+  @AutoMap()
   @ApiProperty()
   phone: string;
 
+  @AutoMap()
   @ApiProperty()
   firstName: string;
 
+  @AutoMap()
   @ApiProperty()
   lastName: string;
 
+  @AutoMap()
   @ApiProperty()
   dob: Date;
 
+  @AutoMap()
   @ApiProperty()
   citizenship: string;
 
+  @AutoMap()
   @ApiProperty()
   gender: string;
 
+  @AutoMap()
   @ApiProperty()
   type: string;
 
-  // @ApiProperty({ type: [ResponseRolesDto] })
-  // roles: ResponseRolesDto[];
-
+  @AutoMap()
   @ApiProperty()
   permissions: string[];
 }

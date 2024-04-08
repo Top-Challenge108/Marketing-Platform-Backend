@@ -13,6 +13,7 @@ export interface IJwtRefreshToken {
   deviceId: string;
   language?: string;
   lastUpdatePassword: Date;
+  tokenId: string;
 }
 
 export interface IJwtVerifyCodePayload {

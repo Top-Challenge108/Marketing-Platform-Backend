@@ -20,9 +20,15 @@ import { defaultDatabaseConfig } from './configs/configs.constants';
 import { SnakeNamingStrategy } from './snake-naming.strategy';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
+import { IntegrationModule } from './modules/integration/integration.module';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
   imports: [
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+    }),
     I18nModule.forRoot({
       fallbackLanguage: LanguageCode.United_States,
       parser: I18nJsonParser,
@@ -67,6 +73,7 @@ import { DataSource } from 'typeorm';
         );
       },
     }),
+    IntegrationModule,
     CommandModule,
     DiscoveryModule,
     UserModule,

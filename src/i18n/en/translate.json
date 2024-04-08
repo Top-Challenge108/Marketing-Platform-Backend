@@ -17,7 +17,7 @@
   "USER_SIGN_UP_SUCCESSFULLY": "SignUp successfully",
   "USER_VERIFY_PHONE_CODE_SUCCESSFULLY": "Verify phone code successfully",
   "USER_SIGN_UP_PHONE_EXISTED": "This phone number is already being used.",
-  "USER_SIGN_UP_EMAIL_EXISTED": "This email address is already being used.",
+  "USER_SIGN_UP_EMAIL_EXISTED": "This email address or phone is already being used.",
   "USER_VERIFY_EMAIL_CODE_ERROR": "Verify email error",
   "USER_VERIFY_EMAIL_CODE_SUCCESSFULLY": "Verify email successfully",
   "EMAIL_NOT_EXIST": "Email does not exist in the system. Please Sign up.",
@@ -62,5 +62,6 @@
   "GET_LIST_LOCATION_SUCCESSFULLY": "get list location successfully",
   "LOCATION_IS_NOT_CORRECT": "Location is not correct",
   "PLACE_ID_IS_NOT_CORRECT": "Place ID is not correct",
-  "VERIFY_TOKEN_SUCCESSFULLY": "Verify token successfully"
+  "VERIFY_TOKEN_SUCCESSFULLY": "Verify token successfully",
+  "GOOGLE_TOKEN_INVALID": "Google token is invalid"
 }
