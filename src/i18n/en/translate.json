@@ -63,5 +63,10 @@
   "LOCATION_IS_NOT_CORRECT": "Location is not correct",
   "PLACE_ID_IS_NOT_CORRECT": "Place ID is not correct",
   "VERIFY_TOKEN_SUCCESSFULLY": "Verify token successfully",
-  "GOOGLE_TOKEN_INVALID": "Google token is invalid"
+  "GOOGLE_TOKEN_INVALID": "Google token is invalid",
+  "SUBSCRIPTION_NOT_FOUND": "Subscription is not found",
+  "GET_LIST_SUBSCRIPTION_SUCCESSFULLY": "Get list subscription successfully",
+  "CREATE_SUBSCRIPTION_SUCCESSFULLY": "Create subscription successfully",
+  "DELETE_SUBSCRIPTION_SUCCESSFULLY": "Delete subscription successfully"
+
 }

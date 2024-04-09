@@ -511,7 +511,6 @@ export class UserService extends BaseAbstractService {
 
   @Transactional()
   async createUser(user: ICreateUser): Promise<UserDto> {
-    // crete stripe user that mapping with heros user
     const stripeCustomer = await this.stripeCustomerService.createCustomer({
       email: user.email,
       name: `${user.firstName} ${user.lastName}`,

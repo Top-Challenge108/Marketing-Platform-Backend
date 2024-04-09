@@ -17,7 +17,6 @@ import {
 } from '../../common/common.constants';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ResponseLoginDto } from './dto/response-login.dto';
-import { decodePassword } from '../../common/helpers';
 import { LoginDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from './token.service';
@@ -70,7 +69,8 @@ export class AuthService extends BaseAbstractService {
       throw new HttpException(response, HttpStatus.BAD_REQUEST);
     }
     const { salt, hashPassword } = await this.userService.hashPassword(
-      decodePassword(password),
+      //   decodePassword(password),
+      password,
     );
 
     const newUser = await this.userService.createUser({
@@ -104,17 +104,6 @@ export class AuthService extends BaseAbstractService {
     const userInfo = await this.googleOAuthService.getUserDataFromToken(
       loginDto.token,
     );
-    // {
-    //     id: "108895746013634241526",
-    //     email: "quangthap9x@gmail.com",
-    //     verified_email: true,
-    //     name: "Thập Lương",
-    //     given_name: "Thập",
-    //     family_name: "Lương",
-    //     picture: "https://lh3.googleusercontent.com/a/ACg8ocLlibyTLWoUpbgAzi5zJ7pq4Iv5wQXIWuCWR-o_CGuh1hZfKZQ=s96-c",
-    //     locale: "vi",
-    //   }
-
     let response;
 
     if (!userInfo || (!userInfo.email && !userInfo.id)) {
@@ -176,10 +165,7 @@ export class AuthService extends BaseAbstractService {
         { statusCode: StatusCode.INVALID_EMAIL, data: result.data },
       );
     }
-    const checkPass = await bcrypt.compare(
-      decodePassword(password),
-      userData.password,
-    );
+    const checkPass = await bcrypt.compare(password, userData.password);
     if (checkPass) {
       const userInfo = await this.userService.findUserDto(userData.id);
       const token = await this.tokenService.createTokenLogin(

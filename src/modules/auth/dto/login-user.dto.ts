@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
-  IsBase64,
   IsDefined,
   Matches,
   IsOptional,
@@ -33,9 +32,6 @@ export class LoginDto {
   @NotEquals(null)
   @ApiProperty({
     example: 'c3RyaW5n',
-  })
-  @IsBase64({
-    // message: 'Password must be encrypt.',
   })
   password: string;
 }

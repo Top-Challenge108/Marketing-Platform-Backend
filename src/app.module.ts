@@ -23,6 +23,7 @@ import { DataSource } from 'typeorm';
 import { IntegrationModule } from './modules/integration/integration.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { SubscriptionModule } from './modules/subscription/subscription.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { classes } from '@automapper/classes';
     LanguageModule,
     LocationModule,
     PaymentModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

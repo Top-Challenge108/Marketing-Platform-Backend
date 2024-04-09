@@ -305,15 +305,15 @@ export class RolesService extends BaseAbstractService {
       );
     }
 
-    const userRole = this.userRoleRepository.create({ roleId });
-
+    const userRole = this.userRoleRepository.create({ roleId, userId });
+    const result = await this.userRoleRepository.save(userRole);
     return this.formatOutputData(
       {
         key: `translate.ADD_USER_ROLE`,
         lang: LanguageCode.United_States,
       },
       {
-        data: userRole,
+        data: result,
         statusCode: StatusCode.ADD_USER_ROLE,
       },
     );

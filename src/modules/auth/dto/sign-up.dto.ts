@@ -3,7 +3,6 @@ import { Transform } from 'class-transformer';
 import {
   Matches,
   IsString,
-  IsBase64,
   MinLength,
   IsDefined,
   NotEquals,
@@ -34,9 +33,9 @@ export class SignUpDto {
   @ApiProperty({
     example: 'c3RyaW5n',
   })
-  @IsBase64({
-    // message: 'Password must be encrypt.',
-  })
+  //   @IsBase64({
+  //     // message: 'Password must be encrypt.',
+  //   })
   @IsString()
   @MinLength(1)
   @IsDefined()

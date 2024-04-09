@@ -16,6 +16,7 @@ export enum Role {
   Vendor = 'Vendor',
   Builder = 'Builder',
   User = 'User',
+  Admin = 'Admin',
 }
 
 export enum StatusCode {
@@ -90,6 +91,10 @@ export enum StatusCode {
   PLACE_ID_IS_NOT_CORRECT = 1051,
   VERIFY_TOKEN_SUCCESSFULLY = 1052,
   GOOGLE_TOKEN_INVALID = 1053,
+  SUBSCRIPTION_NOT_FOUND = 1054,
+  GET_LIST_SUBSCRIPTION_SUCCESSFULLY = 1055,
+  CREATE_SUBSCRIPTION_SUCCESSFULLY = 1056,
+  DELETE_SUBSCRIPTION_SUCCESSFULLY = 1057,
 }
 
 export enum TypeStatus {
@@ -107,8 +112,13 @@ export enum PermissionActions {
   VIEW_ROLE_DETAIL = 'view_role_detail',
   EDIT_ROLE = 'edit_role',
   CREATE_TOOL = 'create_tool',
-  UPDATE_TOOL = 'delete_tool',
+  UPDATE_TOOL = 'update_tool',
   DELETE_TOOL = 'delete_tool',
+
+  VIEW_SUBSCRIPTION_LIST = 'view_subscription_list',
+  CREATE_NEW_SUBSCRIPTION = 'create_new_subscription',
+  VIEW_SUBSCRIPTION_DETAIL = 'view_subscription_detail',
+  DELETE_SUBSCRIPTION_DETAIL = 'delete_subscription',
 }
 
 export enum TypeToken {
