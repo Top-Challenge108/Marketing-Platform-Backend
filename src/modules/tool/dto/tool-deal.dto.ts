@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 
-export class UpsertToolDealDto {
+export class ToolDealDto {
   @AutoMap()
   name: string;
 

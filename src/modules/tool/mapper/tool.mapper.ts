@@ -12,6 +12,7 @@ import { ToolEntity } from '../entities/tool.entity';
 import { ToolDto } from '../dto/tool.dto';
 import { UpsertToolDealDto } from '../dto/upsert-tool-deal.dto';
 import { ToolDealEntity } from '../entities/tool-deal.entity';
+import { ToolDealDto } from '../dto/tool-deal.dto';
 
 @Injectable()
 export class ToolMapper extends AutomapperProfile {
@@ -23,6 +24,7 @@ export class ToolMapper extends AutomapperProfile {
     return (mapper: Mapper) => {
       createMap(mapper, ToolEntity, ToolDto);
       createMap(mapper, UpsertToolDealDto, ToolDealEntity);
+      createMap(mapper, ToolDealEntity, ToolDealDto);
     };
   }
 

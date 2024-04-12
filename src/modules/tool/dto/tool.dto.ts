@@ -1,4 +1,5 @@
 import { AutoMap } from '@automapper/classes';
+import { ToolDealDto } from './tool-deal.dto';
 
 export class ToolDto {
   @AutoMap()
@@ -27,6 +28,9 @@ export class ToolDto {
 
   @AutoMap()
   price: number;
+
+  @AutoMap(() => ToolDealDto)
+  toolDeals: ToolDealDto;
 
   //   @AutoMap()
   //   categoryId!: string;
