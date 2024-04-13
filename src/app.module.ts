@@ -24,6 +24,7 @@ import { IntegrationModule } from './modules/integration/integration.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
+import { ToolModule } from './modules/tool/tool.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { SubscriptionModule } from './modules/subscription/subscription.module';
     LocationModule,
     PaymentModule,
     SubscriptionModule,
+    ToolModule,
   ],
   controllers: [AppController],
   providers: [AppService],
