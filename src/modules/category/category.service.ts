@@ -3,14 +3,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { type UserEntity } from '../user/entities/user.entity';
 import { CategoryDto } from './dtos/category.dto';
 import {
   type UpsertCategory,
   UpsertCategoryResponse,
 } from './dtos/upsert-category.dto';
 import { InjectMapper } from '@automapper/nestjs';
-import { CategoryEntity } from './entities/category.entityn';
+import { CategoryEntity } from './entities/category.entity';
+import { IJwtPayload } from '../auth/payloads/jwt-payload.payload';
 
 @Injectable()
 export class CategoryService {
@@ -22,15 +22,18 @@ export class CategoryService {
   ) {}
 
   async getList(): Promise<CategoryDto[]> {
-    const flatResult = await this.categoryRepository.find();
+    const result = await this.categoryRepository.find();
 
-    return this.mapper.mapArray(flatResult, CategoryEntity, CategoryDto);
+    return this.mapper.mapArray(result, CategoryEntity, CategoryDto);
   }
 
-  async update(dto: UpsertCategory): Promise<UpsertCategoryResponse> {
+  async update(
+    id: string,
+    dto: UpsertCategory,
+  ): Promise<UpsertCategoryResponse> {
     const entity = await this.categoryRepository.findOne({
       where: {
-        id: dto.id,
+        id,
       },
     });
 
@@ -39,7 +42,7 @@ export class CategoryService {
     }
 
     const result = await this.categoryRepository.save({
-      id: dto.id,
+      id,
       ...dto,
     });
 
@@ -48,11 +51,11 @@ export class CategoryService {
 
   async insert(
     dto: UpsertCategory,
-    user: UserEntity,
+    user: IJwtPayload,
   ): Promise<UpsertCategoryResponse> {
     const entity = this.categoryRepository.create({
       ...dto,
-      user,
+      userId: user.id,
     });
 
     const result = await this.categoryRepository.save(entity);

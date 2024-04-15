@@ -1,15 +1,15 @@
 import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpsertCategory {
-  id?: string;
-
+  @ApiProperty()
   name: string;
 
+  @ApiProperty()
   handle?: string;
 
+  @ApiProperty()
   description: string;
-
-  parentId?: string;
 }
 
 export class UpsertCategoryResponse {

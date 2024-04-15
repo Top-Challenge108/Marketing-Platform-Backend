@@ -25,6 +25,7 @@ import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { ToolModule } from './modules/tool/tool.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { ToolModule } from './modules/tool/tool.module';
     PaymentModule,
     SubscriptionModule,
     ToolModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

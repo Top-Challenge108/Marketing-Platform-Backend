@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 
 import { CategoryDto } from '../dtos/category.dto';
 import { UpsertCategoryResponse } from '../dtos/upsert-category.dto';
-import { CategoryEntity } from '../entities/category.entityn';
+import { CategoryEntity } from '../entities/category.entity';
 
 @Injectable()
 export class CategoryMapper extends AutomapperProfile {

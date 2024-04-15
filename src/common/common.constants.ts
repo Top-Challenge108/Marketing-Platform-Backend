@@ -119,6 +119,10 @@ export enum PermissionActions {
   CREATE_NEW_SUBSCRIPTION = 'create_new_subscription',
   VIEW_SUBSCRIPTION_DETAIL = 'view_subscription_detail',
   DELETE_SUBSCRIPTION_DETAIL = 'delete_subscription',
+
+  CREATE_CATEGORY = 'create_category',
+  UPDATE_CATEGORY = 'update_category',
+  DELETE_CATEGORY = 'delete_category',
 }
 
 export enum TypeToken {
