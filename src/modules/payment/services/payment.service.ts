@@ -38,9 +38,6 @@ export class PaymentService extends BaseAbstractService {
     // Handle the event
     switch (event.type) {
       case 'checkout.session.completed':
-        console.log('====================================');
-        console.log('eventeventeventeventevent', event);
-        console.log('====================================');
         const sessionInfo = await this.stripe.checkout.sessions.retrieve(
           event.data.object.id,
           {
@@ -75,7 +72,7 @@ export class PaymentService extends BaseAbstractService {
         const stripeSubsEntity = this.stripeSubscriptionRepository.create({
           name: tool.name,
           price: sessionInfo.amount_total,
-          currency: price.currency as Currency,
+          currency: price.currency.toUpperCase() as Currency,
           stripeSubscriptionId: subscriptionInfo?.id,
           currentPeriodEnd: subscriptionInfo?.current_period_end,
           currentPeriodStart: subscriptionInfo?.current_period_start,
