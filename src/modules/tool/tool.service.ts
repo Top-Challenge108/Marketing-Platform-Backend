@@ -12,6 +12,12 @@ import { LanguageCode, StatusCode } from '../../common/common.constants';
 import { IJwtPayload } from '../auth/payloads/jwt-payload.payload';
 import { Transactional } from 'typeorm-transactional';
 import { ToolDealEntity } from './entities/tool-deal.entity';
+import { CategoryEntity } from '../category/entities/category.entity';
+import { SubscriptionEntity } from '../subscription/entities/subscription.entity';
+import { StripeSubscriptionEntity } from '../subscription/entities/stripe-subscription.entity';
+import { StripeSubscriptionService } from '../integration/services/stripe-subscription.service';
+import { stripeConfig } from '../../configs/configs.constants';
+import { SubmitToolDto } from './dto/submit-tool.dto';
 
 @Injectable()
 export class ToolService extends BaseAbstractService {
@@ -20,6 +26,13 @@ export class ToolService extends BaseAbstractService {
     private readonly toolRepository: Repository<ToolEntity>,
     @InjectRepository(ToolDealEntity)
     private readonly toolDealRepository: Repository<ToolDealEntity>,
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(SubscriptionEntity)
+    private readonly subscriptionRepository: Repository<SubscriptionEntity>,
+    @InjectRepository(StripeSubscriptionEntity)
+    private readonly stripeSubscriptionRepository: Repository<StripeSubscriptionEntity>,
+    private readonly stripeSubscriptionService: StripeSubscriptionService,
     @InjectMapper()
     private readonly mapper: Mapper,
     i18nService: I18nService,
@@ -44,18 +57,66 @@ export class ToolService extends BaseAbstractService {
   @Transactional()
   async create(dto: UpsertToolDto) {
     const deals = this.toolDealRepository.create(dto.toolDeals);
-    const tools = this.toolRepository.create({
+    const category = await this.categoryRepository.findOneBy({
+      id: dto.categoryId,
+    });
+    if (!category) {
+      const result = await this.formatOutputData(
+        {
+          key: `translate.CATEGORY_NOT_FOUND`,
+          lang: LanguageCode.United_States,
+        },
+        {
+          data: null,
+          statusCode: StatusCode.CATEGORY_NOT_FOUND,
+        },
+      );
+      throw new HttpException(result, HttpStatus.BAD_REQUEST);
+    }
+
+    const subscriptions = await this.subscriptionRepository.findOneBy({
+      id: dto.subscriptionId,
+    });
+    if (!subscriptions) {
+      const result = await this.formatOutputData(
+        {
+          key: `translate.SUBSCRIPTION_NOT_FOUND`,
+          lang: LanguageCode.United_States,
+        },
+        {
+          data: null,
+          statusCode: StatusCode.SUBSCRIPTION_NOT_FOUND,
+        },
+      );
+      throw new HttpException(result, HttpStatus.BAD_REQUEST);
+    }
+
+    const tool = this.toolRepository.create({
       ...dto,
       logo: '',
-      categoryId: 'd7915760-b56e-41b6-9472-417c2251a1a1',
+      category,
       toolDeals: deals,
     });
 
-    const result = this.mapper.map(
-      await this.toolRepository.save(tools),
-      ToolEntity,
-      ToolDto,
-    );
+    const toolEntity = await this.toolRepository.save(tool);
+
+    const { session: stripeSession } =
+      await this.stripeSubscriptionService.createStripeSubscriptionPayment({
+        amount: subscriptions.price,
+        productId: toolEntity.id,
+        productName: toolEntity.name,
+        recursionPlan: subscriptions.interval,
+        currency: subscriptions.currency,
+        callbackSuccessUrl: `${stripeConfig.FRONTEND_URL}/success`,
+        callbackFailureUrl: `${stripeConfig.FRONTEND_URL}/cancel`,
+      });
+
+    const toolInfo = this.mapper.map(toolEntity, ToolEntity, ToolDto);
+
+    const result: SubmitToolDto = {
+      tool: toolInfo,
+      checkoutUrl: stripeSession.url,
+    };
 
     return this.formatOutputData(
       {

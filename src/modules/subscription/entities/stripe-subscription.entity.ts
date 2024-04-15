@@ -23,8 +23,8 @@ export class StripeSubscriptionEntity extends AbstractEntity {
   currency: Currency;
 
   @AutoMap()
-  @Column({ nullable: false })
-  price: string;
+  @Column({ nullable: false, default: 0 })
+  price: number;
 
   @AutoMap()
   @Column({ nullable: false })

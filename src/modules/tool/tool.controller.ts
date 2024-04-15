@@ -33,11 +33,11 @@ export class ToolController {
 
   @Post('submit-tool')
   @ApiOkResponse({ type: ToolDto })
-  @UseGuards(AuthenticationGuard, RolesGuard)
-  @Permission({
-    action: PermissionActions.CREATE_TOOL,
-    description: PermissionActions.CREATE_TOOL,
-  })
+  //   @UseGuards(AuthenticationGuard, RolesGuard)
+  //   @Permission({
+  //     action: PermissionActions.CREATE_TOOL,
+  //     description: PermissionActions.CREATE_TOOL,
+  //   })
   create(@Body() dto: UpsertToolDto) {
     return this.toolService.create(dto);
   }

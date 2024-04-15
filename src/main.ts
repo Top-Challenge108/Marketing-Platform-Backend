@@ -3,14 +3,16 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
-import { json, urlencoded } from 'express';
+import { urlencoded } from 'express';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
 dotenv.config();
 
 async function bootstrap() {
   initializeTransactionalContext();
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    rawBody: true,
+  });
   app.setGlobalPrefix('/api');
   const options = new DocumentBuilder()
     .setTitle('App API Documentation')
@@ -44,7 +46,6 @@ async function bootstrap() {
   // Use global validation pipe.
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   //TODO
-  app.use(json({ limit: '10mb' }));
   app.use(urlencoded({ limit: '10mb', extended: true }));
   // Enable CORS for AWS.
   app.enableCors();

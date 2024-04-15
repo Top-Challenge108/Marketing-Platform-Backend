@@ -1,7 +1,16 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { AutoMap } from '@automapper/classes';
 import { ToolDealEntity } from './tool-deal.entity';
+import { StripeSubscriptionEntity } from '../../subscription/entities/stripe-subscription.entity';
+import { CategoryEntity } from '../../category/entities/category.entity';
 
 @Entity('tools')
 export class ToolEntity extends AbstractEntity {
@@ -45,10 +54,28 @@ export class ToolEntity extends AbstractEntity {
   @Column({ type: 'uuid' })
   categoryId!: string;
 
+  @AutoMap()
+  @ManyToOne(() => CategoryEntity)
+  @JoinColumn({ name: 'category_id' })
+  category!: CategoryEntity;
+
   @OneToMany(() => ToolDealEntity, (toolDeal) => toolDeal.tool, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
     cascade: true,
   })
   toolDeals: ToolDealEntity[];
+
+  @AutoMap()
+  @Column({ type: 'uuid', nullable: true })
+  stripeSubscriptionId: string;
+
+  @AutoMap()
+  @OneToOne(() => StripeSubscriptionEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    cascade: true,
+  })
+  @JoinColumn({ name: 'stripe_subscription_id' })
+  stripeSubscription: StripeSubscriptionEntity;
 }

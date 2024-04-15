@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 import { UpsertToolDealDto } from './upsert-tool-deal.dto';
 
 export class UpsertToolDto {
@@ -67,5 +67,14 @@ export class UpsertToolDto {
   price: number;
 
   @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUUID()
   categoryId!: string;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUUID()
+  subscriptionId!: string;
 }

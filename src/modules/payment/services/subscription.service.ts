@@ -16,7 +16,6 @@ export class SubscriptionService extends BaseAbstractService {
   }
 
   async createStripeSubscriptionPayment(dto: SubscriptionDto) {
-    // Todo: manage price from admin site instead of FE side
     try {
       const price = await this.stripe.prices.create({
         currency: 'usd',

@@ -1,0 +1,106 @@
+{
+    "id": "evt_1P5mjKP7TXZ8Nwywfpw67WNZ",
+    "object": "event",
+    "api_version": "2023-10-16",
+    "created": 1713176740,
+    "data": {
+      "object": {
+        "id": "cs_test_a1aWPJXIfE1IdvdgoqmknGaotbQdESvN2VXBZAir3PeFTdpixuHUSLxgr9",
+        "object": "checkout.session",
+        "after_expiration": null,
+        "allow_promotion_codes": null,
+        "amount_subtotal": 100,
+        "amount_total": 100,
+        "automatic_tax": {
+          "enabled": false,
+          "liability": null,
+          "status": null
+        },
+        "billing_address_collection": null,
+        "cancel_url": "http://localhost:3001/cancel",
+        "client_reference_id": null,
+        "client_secret": null,
+        "consent": null,
+        "consent_collection": null,
+        "created": 1713176556,
+        "currency": "usd",
+        "currency_conversion": null,
+        "custom_fields": [
+        ],
+        "custom_text": {
+          "after_submit": null,
+          "shipping_address": null,
+          "submit": null,
+          "terms_of_service_acceptance": null
+        },
+        "customer": "cus_Pve18Axcd9EYYV",
+        "customer_creation": "always",
+        "customer_details": {
+          "address": {
+            "city": null,
+            "country": "VN",
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "email": "ahcnc@aaa.com",
+          "name": "Tenny",
+          "phone": null,
+          "tax_exempt": "none",
+          "tax_ids": [
+          ]
+        },
+        "customer_email": null,
+        "expires_at": 1713262955,
+        "invoice": "in_1P5mj9P7TXZ8NwywxIAYWBtr",
+        "invoice_creation": null,
+        "livemode": false,
+        "locale": null,
+        "metadata": {
+        },
+        "mode": "subscription",
+        "payment_intent": null,
+        "payment_link": null,
+        "payment_method_collection": "always",
+        "payment_method_configuration_details": null,
+        "payment_method_options": {
+          "card": {
+            "request_three_d_secure": "automatic"
+          }
+        },
+        "payment_method_types": [
+          "card"
+        ],
+        "payment_status": "paid",
+        "phone_number_collection": {
+          "enabled": false
+        },
+        "recovered_from": null,
+        "setup_intent": null,
+        "shipping_address_collection": null,
+        "shipping_cost": null,
+        "shipping_details": null,
+        "shipping_options": [
+        ],
+        "status": "complete",
+        "submit_type": null,
+        "subscription": "sub_1P5mj9P7TXZ8NwywFjNstSLx",
+        "success_url": "http://localhost:3001/success",
+        "total_details": {
+          "amount_discount": 0,
+          "amount_shipping": 0,
+          "amount_tax": 0
+        },
+        "ui_mode": "hosted",
+        "url": null
+      }
+    },
+    "livemode": false,
+    "pending_webhooks": 3,
+    "request": {
+      "id": null,
+      "idempotency_key": null
+    },
+    "type": "checkout.session.completed"
+  }

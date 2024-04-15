@@ -10,10 +10,19 @@ import { ToolDealEntity } from './entities/tool-deal.entity';
 import { ToolController } from './tool.controller';
 import { ToolService } from './tool.service';
 import { PermissionsModule } from '../permissions/permissions.module';
+import { SubscriptionEntity } from '../subscription/entities/subscription.entity';
+import { StripeSubscriptionEntity } from '../subscription/entities/stripe-subscription.entity';
+import { CategoryEntity } from '../category/entities/category.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ToolEntity, ToolDealEntity]),
+    TypeOrmModule.forFeature([
+      ToolEntity,
+      ToolDealEntity,
+      SubscriptionEntity,
+      StripeSubscriptionEntity,
+      CategoryEntity,
+    ]),
     forwardRef(() => UserModule),
     forwardRef(() => PermissionsModule),
     LanguageModule,

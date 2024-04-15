@@ -24,7 +24,4 @@ export class UpsertCategoryResponse {
 
   @AutoMap()
   description: string;
-
-  @AutoMap()
-  parentId: string;
 }

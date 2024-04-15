@@ -36,6 +36,7 @@ export const googleConfig = {
 export const stripeConfig = {
   STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
   STRIPE_PRIVATE_KEY: process.env.STRIPE_PRIVATE_KEY,
+  STRIPE_WEBHOOK_KEY: process.env.STRIPE_WEBHOOK_KEY,
   STRIPE_CURRENCY: process.env.STRIPE_CURRENCY,
   FRONTEND_URL: process.env.FRONTEND_URL,
 };

@@ -12,13 +12,4 @@ export class CategoryDto {
 
   @AutoMap()
   description: string;
-
-  @AutoMap()
-  rank: number;
-
-  @AutoMap(() => [CategoryDto])
-  chilren?: CategoryDto[];
-
-  @AutoMap()
-  parentId: string | null;
 }

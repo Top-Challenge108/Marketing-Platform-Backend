@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ToolDealDto } from './tool-deal.dto';
+import { CategoryDto } from '../../category/dtos/category.dto';
 
 export class ToolDto {
   @AutoMap()
@@ -32,6 +33,6 @@ export class ToolDto {
   @AutoMap(() => ToolDealDto)
   toolDeals: ToolDealDto;
 
-  //   @AutoMap()
-  //   categoryId!: string;
+  @AutoMap(() => CategoryDto)
+  category!: CategoryDto;
 }
