@@ -10,7 +10,13 @@ export class SubscriptionEntity extends AbstractEntity {
   name: string;
 
   @AutoMap()
-  @Column({ nullable: false, default: 0 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 5,
+    nullable: false,
+    default: 0,
+  })
   price: number;
 
   @AutoMap()

@@ -56,6 +56,21 @@ export class ToolService extends BaseAbstractService {
 
   @Transactional()
   async create(dto: UpsertToolDto) {
+    const existedTool = await this.toolRepository.findOneBy({ name: dto.name });
+    if (existedTool) {
+      const result = await this.formatOutputData(
+        {
+          key: `translate.TOOL_ALREADY_EXISTED`,
+          lang: LanguageCode.United_States,
+        },
+        {
+          data: null,
+          statusCode: StatusCode.TOOL_ALREADY_EXISTED,
+        },
+      );
+      throw new HttpException(result, HttpStatus.BAD_REQUEST);
+    }
+
     const deals = this.toolDealRepository.create(dto.toolDeals);
     const category = await this.categoryRepository.findOneBy({
       id: dto.categoryId,
@@ -111,11 +126,25 @@ export class ToolService extends BaseAbstractService {
         callbackFailureUrl: `${stripeConfig.FRONTEND_URL}/cancel`,
       });
 
+    if (!stripeSession) {
+      const result = await this.formatOutputData(
+        {
+          key: `translate.CANNOT_SUBMIT_TOOL_NOW`,
+          lang: LanguageCode.United_States,
+        },
+        {
+          data: null,
+          statusCode: StatusCode.CANNOT_SUBMIT_TOOL_NOW,
+        },
+      );
+      throw new HttpException(result, HttpStatus.BAD_REQUEST);
+    }
+
     const toolInfo = this.mapper.map(toolEntity, ToolEntity, ToolDto);
 
     const result: SubmitToolDto = {
       tool: toolInfo,
-      checkoutUrl: stripeSession.url,
+      checkoutUrl: stripeSession?.url,
     };
 
     return this.formatOutputData(

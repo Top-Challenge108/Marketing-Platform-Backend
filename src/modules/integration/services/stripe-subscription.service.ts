@@ -26,7 +26,7 @@ export class StripeSubscriptionService {
     try {
       const price = await this.stripeCore.prices.create({
         currency: params.currency,
-        unit_amount: params.amount,
+        unit_amount: Number(params.amount),
         recurring: {
           interval: params.recursionPlan,
         },
@@ -51,7 +51,7 @@ export class StripeSubscriptionService {
 
       return { session, price };
     } catch (e) {
-      return null;
+      return {};
     }
   }
 }
