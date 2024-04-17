@@ -54,3 +54,9 @@ export const googleOAuthConfig = {
   CLIENT_ID: process.env.CLIENT_ID,
   CLIENT_SECRET: process.env.CLIENT_SECRET,
 };
+
+export const cloudinaryConfig = {
+  NAME: process.env.CLOUDINARY_NAME,
+  API_KEY: process.env.CLOUDINARY_API_KEY,
+  API_SECRET: process.env.CLOUDINARY_API_SECRET,
+};

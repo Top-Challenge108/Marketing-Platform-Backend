@@ -31,8 +31,16 @@ export class ToolEntity extends AbstractEntity {
   website?: string;
 
   @AutoMap()
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   logo?: string;
+
+  @AutoMap()
+  @Column({ type: 'uuid', nullable: true })
+  logoId: string;
+
+  @AutoMap()
+  @Column({ type: 'simple-array', default: [] })
+  screenshotId: string[];
 
   @AutoMap()
   @Column({ type: 'simple-array', default: [] })

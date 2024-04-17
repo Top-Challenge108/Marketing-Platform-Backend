@@ -8,16 +8,20 @@ import {
   Delete,
   Param,
   Req,
+  UsePipes,
+  UploadedFiles,
 } from '@nestjs/common';
 import { PermissionActions } from '../../common/common.constants';
 import { Permission } from '../../common/permissions.decorator';
 import { ToolService } from './tool.service';
-import { UpsertToolDto } from './dto/upsert-tool.dto';
+import { UploadMediaToolDto, UpsertToolDto } from './dto/upsert-tool.dto';
 import { ToolDto } from './dto/tool.dto';
 import { RolesGuard } from '../../guards/roles.guard';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { IJwtPayload } from '../auth/payloads/jwt-payload.payload';
 import { Request } from 'express';
+import { ApiFile } from '../../common/swagger.decorator';
+import { SingularPropertyPipeTransform } from '../../transformers/singular-property.transform';
 
 @ApiTags('Tools')
 @Controller('tools')
@@ -33,13 +37,21 @@ export class ToolController {
 
   @Post('submit-tool')
   @ApiOkResponse({ type: ToolDto })
+  @ApiFile([
+    { name: 'logo', maxCount: 1 },
+    { name: 'screenshots', maxCount: 5 },
+  ])
+  @UsePipes(new SingularPropertyPipeTransform())
   //   @UseGuards(AuthenticationGuard, RolesGuard)
   //   @Permission({
   //     action: PermissionActions.CREATE_TOOL,
   //     description: PermissionActions.CREATE_TOOL,
   //   })
-  create(@Body() dto: UpsertToolDto) {
-    return this.toolService.create(dto);
+  create(
+    @Body() dto: UpsertToolDto,
+    @UploadedFiles() media: UploadMediaToolDto,
+  ) {
+    return this.toolService.create(dto, media);
   }
 
   @Delete(':id')

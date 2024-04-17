@@ -2,6 +2,8 @@ import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 import { UpsertToolDealDto } from './upsert-tool-deal.dto';
+import { IFile } from '../../../interfaces/file.interface';
+import { Transform } from 'class-transformer';
 
 export class UpsertToolDto {
   @AutoMap()
@@ -35,11 +37,6 @@ export class UpsertToolDto {
     isArray: true,
   })
   toolDeals: UpsertToolDealDto[];
-  //   @AutoMap()
-  //   logo?: string;
-
-  //   @AutoMap()
-  //   screenshots?: string[];
 
   @AutoMap()
   @ApiProperty({
@@ -64,6 +61,9 @@ export class UpsertToolDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   price: number;
 
   @AutoMap()
@@ -77,4 +77,10 @@ export class UpsertToolDto {
   @IsNotEmpty()
   @IsUUID()
   subscriptionId!: string;
+}
+
+export class UploadMediaToolDto {
+  logo?: IFile;
+
+  screenshots?: IFile[];
 }

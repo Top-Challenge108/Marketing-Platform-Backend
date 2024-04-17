@@ -13,6 +13,7 @@ import { PermissionsModule } from '../permissions/permissions.module';
 import { SubscriptionEntity } from '../subscription/entities/subscription.entity';
 import { StripeSubscriptionEntity } from '../subscription/entities/stripe-subscription.entity';
 import { CategoryEntity } from '../category/entities/category.entity';
+import { FileEntity } from '../file/entities/file.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CategoryEntity } from '../category/entities/category.entity';
       SubscriptionEntity,
       StripeSubscriptionEntity,
       CategoryEntity,
+      FileEntity,
     ]),
     forwardRef(() => UserModule),
     forwardRef(() => PermissionsModule),

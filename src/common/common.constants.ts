@@ -98,6 +98,7 @@ export enum StatusCode {
   CATEGORY_NOT_FOUND = 1058,
   TOOL_ALREADY_EXISTED = 1059,
   CANNOT_SUBMIT_TOOL_NOW = 1060,
+  MEDIA_SERVICE_ERROR = 1061,
 }
 
 export enum TypeStatus {
