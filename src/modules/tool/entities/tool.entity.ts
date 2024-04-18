@@ -78,11 +78,12 @@ export class ToolEntity extends AbstractEntity {
   @Column({ type: 'enum', enum: ToolStatus, default: ToolStatus.pending })
   status: ToolStatus;
 
-  @AutoMap()
+  @AutoMap(() => CategoryEntity)
   @ManyToOne(() => CategoryEntity)
   @JoinColumn({ name: 'category_id' })
   category!: CategoryEntity;
 
+  @AutoMap(() => [ToolDealEntity])
   @OneToMany(() => ToolDealEntity, (toolDeal) => toolDeal.tool, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -94,7 +95,7 @@ export class ToolEntity extends AbstractEntity {
   @Column({ type: 'uuid', nullable: true })
   stripeSubscriptionId: string;
 
-  @AutoMap()
+  @AutoMap(() => StripeSubscriptionEntity)
   @OneToOne(() => StripeSubscriptionEntity, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -107,10 +108,11 @@ export class ToolEntity extends AbstractEntity {
   @Column({ type: 'uuid', nullable: true })
   userId: string;
 
+  @AutoMap(() => UserEntity)
   @ManyToOne(() => UserEntity, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  author: UserEntity;
 }

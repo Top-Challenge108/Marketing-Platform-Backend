@@ -23,6 +23,7 @@ import { FileEntity } from '../file/entities/file.entity';
 import { PageOptionsDto } from '../../common/page-options.dto';
 import { PageMetaDto } from '../../common/page-meta.dto';
 import { PageDto } from '../../common/page.dto';
+import { FilterToolPageOptionsDto } from './dto/filter-tool.dto';
 
 @Injectable()
 export class ToolService extends BaseAbstractService {
@@ -46,6 +47,47 @@ export class ToolService extends BaseAbstractService {
     i18nService: I18nService,
   ) {
     super(i18nService);
+  }
+
+  async filterTool(filter: FilterToolPageOptionsDto) {
+    const query = this.toolRepository
+      .createQueryBuilder('tools')
+      .where('tools.status = :status', { status: ToolStatus.published });
+    if (filter.categoryId) {
+      query.where('tools.category_id = :categoryId', {
+        categoryId: filter.categoryId,
+      });
+    }
+
+    query.leftJoinAndSelect('tools.author', 'author');
+
+    if (filter.sort) {
+      query.orderBy(`tools.${filter.sort}`, filter.order);
+    }
+
+    const itemCount = await query.getCount();
+    const tools = await query.skip(filter.skip).take(filter.take).getMany();
+
+    const data = this.mapper.mapArray(tools, ToolEntity, ToolDto);
+
+    const result = new PageDto(
+      data,
+      new PageMetaDto({
+        pageOptionsDto: filter,
+        itemCount,
+      }),
+    );
+
+    return this.formatOutputData(
+      {
+        key: `translate.GET_LIST_SUBSCRIPTION_SUCCESSFULLY`,
+        lang: LanguageCode.United_States,
+      },
+      {
+        data: result,
+        statusCode: StatusCode.GET_LIST_SUBSCRIPTION_SUCCESSFULLY,
+      },
+    );
   }
 
   async getList(filter: PageOptionsDto, jwtPayload: IJwtPayload) {

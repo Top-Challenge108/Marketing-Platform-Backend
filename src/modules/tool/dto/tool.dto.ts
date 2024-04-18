@@ -2,6 +2,7 @@ import { AutoMap } from '@automapper/classes';
 import { ToolDealDto } from './tool-deal.dto';
 import { CategoryDto } from '../../category/dtos/category.dto';
 import { ToolStatus } from '../entities/tool.entity';
+import { AuthorDto } from './author.dto';
 
 export class ToolDto {
   @AutoMap()
@@ -39,4 +40,7 @@ export class ToolDto {
 
   @AutoMap(() => CategoryDto)
   category!: CategoryDto;
+
+  @AutoMap(() => AuthorDto)
+  author: AuthorDto;
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 
 export enum Order {
   ASC = 'ASC',
@@ -14,6 +14,13 @@ export class PageOptionsDto {
     required: false,
   })
   readonly order: Order = Order.ASC;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: false,
+  })
+  readonly sort?: string;
 
   @IsOptional()
   @IsInt()

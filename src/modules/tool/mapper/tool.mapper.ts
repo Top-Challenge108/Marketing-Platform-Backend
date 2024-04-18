@@ -15,6 +15,8 @@ import { ToolDto } from '../dto/tool.dto';
 import { UpsertToolDealDto } from '../dto/upsert-tool-deal.dto';
 import { ToolDealEntity } from '../entities/tool-deal.entity';
 import { ToolDealDto } from '../dto/tool-deal.dto';
+import { UserEntity } from '../../user/entities/user.entity';
+import { AuthorDto } from '../dto/author.dto';
 
 @Injectable()
 export class ToolMapper extends AutomapperProfile {
@@ -23,6 +25,10 @@ export class ToolMapper extends AutomapperProfile {
   }
   override get profile(): MappingProfile {
     return (mapper: Mapper) => {
+      createMap(mapper, UserEntity, AuthorDto);
+      createMap(mapper, AuthorDto, UserEntity);
+      createMap(mapper, ToolDealEntity, ToolDealDto);
+      createMap(mapper, ToolDealDto, ToolDealEntity);
       createMap(
         mapper,
         ToolEntity,
@@ -39,9 +45,14 @@ export class ToolMapper extends AutomapperProfile {
           (destination) => destination.useCases,
           mapFrom((source) => source.useCases),
         ),
+        forMember(
+          (destination) => destination.author,
+          mapFrom((source) => {
+            return mapper.map(source.author, UserEntity, AuthorDto);
+          }),
+        ),
       );
       createMap(mapper, UpsertToolDealDto, ToolDealEntity);
-      createMap(mapper, ToolDealEntity, ToolDealDto);
     };
   }
 

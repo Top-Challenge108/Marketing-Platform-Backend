@@ -106,3 +106,12 @@ export const getPlaceDetails = async function getPlaceDetails(placeId) {
     return null;
   }
 };
+
+export const toDatabaseField = (
+  f: string,
+): string => // convert query field to database field (eg: CreatedAt => created_at)
+  f
+    .replaceAll(/(?:^|\.?)([A-Z])/g, function (x, y) {
+      return '_' + y.toLowerCase();
+    })
+    .replace(/^_/, '');

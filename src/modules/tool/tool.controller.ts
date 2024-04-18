@@ -24,12 +24,18 @@ import { Request } from 'express';
 import { ApiFile } from '../../common/swagger.decorator';
 import { SingularPropertyPipeTransform } from '../../transformers/singular-property.transform';
 import { PageOptionsDto } from '../../common/page-options.dto';
+import { FilterToolPageOptionsDto } from './dto/filter-tool.dto';
 
 @ApiTags('Tools')
 @Controller('tools')
 @ApiBearerAuth()
 export class ToolController {
   constructor(private readonly toolService: ToolService) {}
+
+  @Get('filter')
+  filterList(@Query() filter: FilterToolPageOptionsDto) {
+    return this.toolService.filterTool(filter);
+  }
 
   @Get('list')
   @UseGuards(AuthenticationGuard, RolesGuard)
