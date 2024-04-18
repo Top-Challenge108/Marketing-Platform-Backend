@@ -99,6 +99,8 @@ export enum StatusCode {
   TOOL_ALREADY_EXISTED = 1059,
   CANNOT_SUBMIT_TOOL_NOW = 1060,
   MEDIA_SERVICE_ERROR = 1061,
+  TOOL_NOT_FOUND = 1062,
+  PUBLISH_SUBSCRIPTION_SUCCESSFULLY = 1063,
 }
 
 export enum TypeStatus {
@@ -115,9 +117,11 @@ export enum PermissionActions {
   CREATE_NEW_ROLE = 'create_new_role',
   VIEW_ROLE_DETAIL = 'view_role_detail',
   EDIT_ROLE = 'edit_role',
+  VIEW_TOOL = 'view_tool',
   CREATE_TOOL = 'create_tool',
   UPDATE_TOOL = 'update_tool',
   DELETE_TOOL = 'delete_tool',
+  PUBLISH_TOOL = 'publish_tool',
 
   VIEW_SUBSCRIPTION_LIST = 'view_subscription_list',
   CREATE_NEW_SUBSCRIPTION = 'create_new_subscription',

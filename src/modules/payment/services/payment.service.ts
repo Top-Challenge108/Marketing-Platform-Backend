@@ -5,9 +5,10 @@ import Stripe from 'stripe';
 import { stripeConfig } from '../../../configs/configs.constants';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ToolEntity } from '../../tool/entities/tool.entity';
+import { ToolEntity, ToolStatus } from '../../tool/entities/tool.entity';
 import { StripeSubscriptionEntity } from '../../subscription/entities/stripe-subscription.entity';
 import { Currency } from '../../subscription/enum/subscription.enum';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class PaymentService extends BaseAbstractService {
@@ -25,6 +26,7 @@ export class PaymentService extends BaseAbstractService {
     });
   }
 
+  @Transactional()
   async handleStripeCallBackHook(
     body: string | Buffer,
     signature: string | Buffer | string[],
@@ -69,6 +71,7 @@ export class PaymentService extends BaseAbstractService {
           return;
         }
 
+        tool.status = ToolStatus.published;
         const stripeSubsEntity = this.stripeSubscriptionRepository.create({
           name: tool.name,
           price: sessionInfo.amount_total,
@@ -80,8 +83,8 @@ export class PaymentService extends BaseAbstractService {
           startDate: subscriptionInfo?.start_date,
         });
 
+        await this.toolRepository.save(tool);
         await this.stripeSubscriptionRepository.save(stripeSubsEntity);
-        // // sessionInfo.line_items.data[0].price.recurring.interval
 
         console.log('sessionInfo' + JSON.stringify(sessionInfo.line_items));
         break;

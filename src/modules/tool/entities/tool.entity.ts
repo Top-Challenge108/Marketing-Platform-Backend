@@ -11,6 +11,12 @@ import { AutoMap } from '@automapper/classes';
 import { ToolDealEntity } from './tool-deal.entity';
 import { StripeSubscriptionEntity } from '../../subscription/entities/stripe-subscription.entity';
 import { CategoryEntity } from '../../category/entities/category.entity';
+import { UserEntity } from '../../user/entities/user.entity';
+
+export enum ToolStatus {
+  pending = 'pending',
+  published = 'published',
+}
 
 @Entity('tools')
 export class ToolEntity extends AbstractEntity {
@@ -69,6 +75,10 @@ export class ToolEntity extends AbstractEntity {
   categoryId!: string;
 
   @AutoMap()
+  @Column({ type: 'enum', enum: ToolStatus, default: ToolStatus.pending })
+  status: ToolStatus;
+
+  @AutoMap()
   @ManyToOne(() => CategoryEntity)
   @JoinColumn({ name: 'category_id' })
   category!: CategoryEntity;
@@ -92,4 +102,15 @@ export class ToolEntity extends AbstractEntity {
   })
   @JoinColumn({ name: 'stripe_subscription_id' })
   stripeSubscription: StripeSubscriptionEntity;
+
+  @AutoMap()
+  @Column({ type: 'uuid', nullable: true })
+  userId: string;
+
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntity;
 }

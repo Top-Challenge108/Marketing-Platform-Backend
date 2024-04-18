@@ -1,7 +1,7 @@
 import { CloudinaryService } from './../integration/services/cloudinary.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { ToolEntity } from './entities/tool.entity';
+import { ToolEntity, ToolStatus } from './entities/tool.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadMediaToolDto, UpsertToolDto } from './dto/upsert-tool.dto';
 import { Mapper } from '@automapper/core';
@@ -20,6 +20,9 @@ import { StripeSubscriptionService } from '../integration/services/stripe-subscr
 import { stripeConfig } from '../../configs/configs.constants';
 import { SubmitToolDto } from './dto/submit-tool.dto';
 import { FileEntity } from '../file/entities/file.entity';
+import { PageOptionsDto } from '../../common/page-options.dto';
+import { PageMetaDto } from '../../common/page-meta.dto';
+import { PageDto } from '../../common/page.dto';
 
 @Injectable()
 export class ToolService extends BaseAbstractService {
@@ -45,22 +48,48 @@ export class ToolService extends BaseAbstractService {
     super(i18nService);
   }
 
-  async getList() {
-    const sub = await this.toolRepository.find();
+  async getList(filter: PageOptionsDto, jwtPayload: IJwtPayload) {
+    const toolsQuery = this.toolRepository
+      .createQueryBuilder('tools')
+      .where(`tools.user_id = :userId`, {
+        userId: jwtPayload.id,
+      })
+      .orderBy('created_at', filter.order);
+
+    const itemCount = await toolsQuery.getCount();
+    const tools = await toolsQuery
+      .skip(filter.skip)
+      .take(filter.take)
+      .getMany();
+
+    const data = this.mapper.mapArray(tools, ToolEntity, ToolDto);
+
+    const result = new PageDto(
+      data,
+      new PageMetaDto({
+        pageOptionsDto: filter,
+        itemCount,
+      }),
+    );
+
     return this.formatOutputData(
       {
         key: `translate.GET_LIST_SUBSCRIPTION_SUCCESSFULLY`,
         lang: LanguageCode.United_States,
       },
       {
-        data: this.mapper.mapArray(sub, ToolEntity, ToolDto),
+        data: result,
         statusCode: StatusCode.GET_LIST_SUBSCRIPTION_SUCCESSFULLY,
       },
     );
   }
 
   @Transactional()
-  async create(dto: UpsertToolDto, media: UploadMediaToolDto) {
+  async create(
+    dto: UpsertToolDto,
+    media: UploadMediaToolDto,
+    jwtPayload: IJwtPayload,
+  ) {
     const existedTool = await this.toolRepository.findOneBy({ name: dto.name });
     if (existedTool) {
       const result = await this.formatOutputData(
@@ -188,6 +217,7 @@ export class ToolService extends BaseAbstractService {
       screenshotId: screenshots.map((screenshot) => screenshot.id),
       category,
       toolDeals: deals,
+      userId: jwtPayload.id,
     });
 
     const toolEntity = await this.toolRepository.save(tool);
@@ -237,23 +267,26 @@ export class ToolService extends BaseAbstractService {
   }
 
   async delete(id: string, jwtPayload: IJwtPayload) {
-    const sub = await this.toolRepository.findOneBy({ id });
+    const tool = await this.toolRepository.findOneBy({
+      id,
+      userId: jwtPayload.id,
+    });
 
-    if (!sub) {
+    if (!tool) {
       const result = await this.formatOutputData(
         {
-          key: `translate.SUBSCRIPTION_NOT_FOUND`,
+          key: `translate.TOOL_NOT_FOUND`,
           lang: jwtPayload.language,
         },
         {
           data: null,
-          statusCode: StatusCode.SUBSCRIPTION_NOT_FOUND,
+          statusCode: StatusCode.TOOL_NOT_FOUND,
         },
       );
 
       throw new HttpException(result, HttpStatus.BAD_REQUEST);
     }
-    await this.toolRepository.save(sub);
+    const result = await this.toolRepository.softRemove(tool);
 
     return this.formatOutputData(
       {
@@ -261,8 +294,44 @@ export class ToolService extends BaseAbstractService {
         lang: LanguageCode.United_States,
       },
       {
-        data: {},
+        data: this.mapper.map(result, ToolEntity, ToolDto),
         statusCode: StatusCode.DELETE_SUBSCRIPTION_SUCCESSFULLY,
+      },
+    );
+  }
+
+  async publish(id: string, jwtPayload: IJwtPayload) {
+    const tool = await this.toolRepository.findOneBy({
+      id,
+      userId: jwtPayload.id,
+      status: ToolStatus.pending,
+    });
+
+    if (!tool) {
+      const result = await this.formatOutputData(
+        {
+          key: `translate.TOOL_NOT_FOUND`,
+          lang: jwtPayload.language,
+        },
+        {
+          data: null,
+          statusCode: StatusCode.TOOL_NOT_FOUND,
+        },
+      );
+
+      throw new HttpException(result, HttpStatus.BAD_REQUEST);
+    }
+    tool.status = ToolStatus.published;
+    const result = await this.toolRepository.save(tool);
+
+    return this.formatOutputData(
+      {
+        key: `translate.PUBLISH_SUBSCRIPTION_SUCCESSFULLY`,
+        lang: LanguageCode.United_States,
+      },
+      {
+        data: this.mapper.map(result, ToolEntity, ToolDto),
+        statusCode: StatusCode.PUBLISH_SUBSCRIPTION_SUCCESSFULLY,
       },
     );
   }

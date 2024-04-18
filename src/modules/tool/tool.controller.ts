@@ -10,6 +10,7 @@ import {
   Req,
   UsePipes,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { PermissionActions } from '../../common/common.constants';
 import { Permission } from '../../common/permissions.decorator';
@@ -22,6 +23,7 @@ import { IJwtPayload } from '../auth/payloads/jwt-payload.payload';
 import { Request } from 'express';
 import { ApiFile } from '../../common/swagger.decorator';
 import { SingularPropertyPipeTransform } from '../../transformers/singular-property.transform';
+import { PageOptionsDto } from '../../common/page-options.dto';
 
 @ApiTags('Tools')
 @Controller('tools')
@@ -30,9 +32,13 @@ export class ToolController {
   constructor(private readonly toolService: ToolService) {}
 
   @Get('list')
-  @ApiOkResponse({ type: Array<ToolDto> })
-  getList() {
-    return this.toolService.getList();
+  @UseGuards(AuthenticationGuard, RolesGuard)
+  @Permission({
+    action: PermissionActions.VIEW_TOOL,
+    description: PermissionActions.VIEW_TOOL,
+  })
+  getList(@Query() filter: PageOptionsDto, @Req() req: Request) {
+    return this.toolService.getList(filter, <IJwtPayload>req.user);
   }
 
   @Post('submit-tool')
@@ -42,23 +48,34 @@ export class ToolController {
     { name: 'screenshots', maxCount: 5 },
   ])
   @UsePipes(new SingularPropertyPipeTransform())
-  //   @UseGuards(AuthenticationGuard, RolesGuard)
-  //   @Permission({
-  //     action: PermissionActions.CREATE_TOOL,
-  //     description: PermissionActions.CREATE_TOOL,
-  //   })
+  @UseGuards(AuthenticationGuard, RolesGuard)
+  @Permission({
+    action: PermissionActions.CREATE_TOOL,
+    description: PermissionActions.CREATE_TOOL,
+  })
   create(
     @Body() dto: UpsertToolDto,
     @UploadedFiles() media: UploadMediaToolDto,
+    @Req() req: Request,
   ) {
-    return this.toolService.create(dto, media);
+    return this.toolService.create(dto, media, <IJwtPayload>req.user);
+  }
+
+  @Post('publish-tool/:id')
+  @UseGuards(AuthenticationGuard, RolesGuard)
+  @Permission({
+    action: PermissionActions.PUBLISH_TOOL,
+    description: PermissionActions.PUBLISH_TOOL,
+  })
+  publish(@Param(':id') id: string, @Req() req: Request) {
+    return this.toolService.publish(id, <IJwtPayload>req.user);
   }
 
   @Delete(':id')
   @UseGuards(AuthenticationGuard, RolesGuard)
   @Permission({
-    action: PermissionActions.DELETE_SUBSCRIPTION_DETAIL,
-    description: PermissionActions.DELETE_SUBSCRIPTION_DETAIL,
+    action: PermissionActions.DELETE_TOOL,
+    description: PermissionActions.DELETE_TOOL,
   })
   delete(@Param(':id') id: string, @Req() req: Request) {
     return this.toolService.delete(id, <IJwtPayload>req.user);
