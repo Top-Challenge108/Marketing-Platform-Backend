@@ -25,6 +25,7 @@ import { PageMetaDto } from '../../common/page-meta.dto';
 import { PageDto } from '../../common/page.dto';
 import { FilterToolPageOptionsDto } from './dto/filter-tool.dto';
 import { parseInputString } from '../../common/helpers';
+import { IFile } from '../../interfaces/file.interface';
 
 @Injectable()
 export class ToolService extends BaseAbstractService {
@@ -239,9 +240,17 @@ export class ToolService extends BaseAbstractService {
       });
       logoEntity = await this.fileRepository.save(logoObj);
 
-      const uploadingScreenshots = media.screenshots.map((screenshot) => {
-        return this.cloudinaryService.uploadImage(screenshot);
-      });
+      let uploadingScreenshots = [];
+      if (Array.isArray(media.screenshots)) {
+        uploadingScreenshots = media.screenshots.map((screenshot) => {
+          return this.cloudinaryService.uploadImage(screenshot);
+        });
+      } else {
+        uploadingScreenshots.push(
+          this.cloudinaryService.uploadImage(media.screenshots as IFile),
+        );
+      }
+
       const uploadedScreenshots = await Promise.all(uploadingScreenshots);
       const screenshotsObjs = uploadedScreenshots.map((screenshot) => {
         return this.fileRepository.create({
