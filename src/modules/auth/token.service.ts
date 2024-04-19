@@ -155,7 +155,7 @@ export class TokenService extends BaseAbstractService {
     ]);
 
     return {
-      user: userInfo,
+      user: await this.userService.findUserDto(userId),
       accessToken,
       refreshToken,
     };
@@ -164,7 +164,7 @@ export class TokenService extends BaseAbstractService {
   private async decodeRefreshToken(refreshToken: string) {
     try {
       const validatedResult = await this.jwtService.verifyAsync(refreshToken, {
-        algorithms: ['RS256'],
+        secret: JwtConfig.COMMON_API_JWT_REFRESH_TOKEN_SECRET,
       });
 
       return validatedResult;
