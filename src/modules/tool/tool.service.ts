@@ -174,9 +174,11 @@ export class ToolService extends BaseAbstractService {
       throw new HttpException(result, HttpStatus.BAD_REQUEST);
     }
 
-    const deals = this.toolDealRepository.create(
-      parseInputString(dto.toolDeals),
-    );
+    let deals = [];
+    if (dto.toolDeals) {
+      deals = this.toolDealRepository.create(parseInputString(dto.toolDeals));
+    }
+
     const category = await this.categoryRepository.findOneBy({
       id: dto.categoryId,
     });
