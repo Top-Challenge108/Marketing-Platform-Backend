@@ -20,6 +20,9 @@ export class UpsertCategoryResponse {
   name: string;
 
   @AutoMap()
+  icon: string;
+
+  @AutoMap()
   handle: string;
 
   @AutoMap()

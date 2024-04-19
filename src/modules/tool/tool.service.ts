@@ -24,6 +24,7 @@ import { PageOptionsDto } from '../../common/page-options.dto';
 import { PageMetaDto } from '../../common/page-meta.dto';
 import { PageDto } from '../../common/page.dto';
 import { FilterToolPageOptionsDto } from './dto/filter-tool.dto';
+import { parseInputString } from '../../common/helpers';
 
 @Injectable()
 export class ToolService extends BaseAbstractService {
@@ -126,6 +127,32 @@ export class ToolService extends BaseAbstractService {
     );
   }
 
+  async getOneByName(name: string) {
+    const tool = await this.toolRepository.findOne({
+      where: {
+        name: name,
+      },
+      relations: ['author', 'category', 'toolDeals'],
+    });
+
+    console.log('====================================');
+    console.log('tool', tool);
+    console.log('====================================');
+
+    const data = this.mapper.map(tool, ToolEntity, ToolDto);
+
+    return this.formatOutputData(
+      {
+        key: `translate.GET_LIST_SUBSCRIPTION_SUCCESSFULLY`,
+        lang: LanguageCode.United_States,
+      },
+      {
+        data: data,
+        statusCode: StatusCode.GET_LIST_SUBSCRIPTION_SUCCESSFULLY,
+      },
+    );
+  }
+
   @Transactional()
   async create(
     dto: UpsertToolDto,
@@ -147,7 +174,9 @@ export class ToolService extends BaseAbstractService {
       throw new HttpException(result, HttpStatus.BAD_REQUEST);
     }
 
-    const deals = this.toolDealRepository.create(dto.toolDeals);
+    const deals = this.toolDealRepository.create(
+      parseInputString(dto.toolDeals),
+    );
     const category = await this.categoryRepository.findOneBy({
       id: dto.categoryId,
     });

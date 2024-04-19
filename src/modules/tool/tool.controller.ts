@@ -47,6 +47,11 @@ export class ToolController {
     return this.toolService.getList(filter, <IJwtPayload>req.user);
   }
 
+  @Get('info/:name')
+  getToolInfoByName(@Param('name') name: string) {
+    return this.toolService.getOneByName(name);
+  }
+
   @Post('submit-tool')
   @ApiOkResponse({ type: ToolDto })
   @ApiFile([

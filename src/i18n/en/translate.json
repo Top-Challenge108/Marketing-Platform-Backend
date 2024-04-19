@@ -72,5 +72,6 @@
   "TOOL_ALREADY_EXISTED": "This tool already existed",
   "CANNOT_SUBMIT_TOOL_NOW": "Cannot submit tool now",
   "MEDIA_SERVICE_ERROR": "Media service error",
-  "PUBLISH_SUBSCRIPTION_SUCCESSFULLY": "Publish subscription successfully"
+  "PUBLISH_SUBSCRIPTION_SUCCESSFULLY": "Publish subscription successfully",
+  "GET_CATEGORY_SUCCESSFULLY": "Get category successfully"
 }

@@ -51,6 +51,19 @@ export class ToolMapper extends AutomapperProfile {
             return mapper.map(source.author, UserEntity, AuthorDto);
           }),
         ),
+        forMember(
+          (destination) => destination.toolDeals,
+          mapFrom((source) => {
+            if (!source.toolDeals) {
+              return null;
+            }
+            return mapper.mapArray(
+              source.toolDeals,
+              ToolDealEntity,
+              ToolDealDto,
+            );
+          }),
+        ),
       );
       createMap(mapper, UpsertToolDealDto, ToolDealEntity);
     };

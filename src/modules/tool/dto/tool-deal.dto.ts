@@ -2,6 +2,9 @@ import { AutoMap } from '@automapper/classes';
 
 export class ToolDealDto {
   @AutoMap()
+  id: string;
+
+  @AutoMap()
   name: string;
 
   @AutoMap()

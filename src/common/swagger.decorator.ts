@@ -8,7 +8,7 @@ import {
 import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';
 import {
   FileFieldsInterceptor,
-  FilesInterceptor,
+  FileInterceptor,
 } from '@nestjs/platform-express';
 import {
   ApiBody,
@@ -120,6 +120,6 @@ export function ApiFile(
     ApiFileDecorator(_.castArray(files), options),
     _.isArray(files)
       ? UseInterceptors(FileFieldsInterceptor(files as MulterField[]))
-      : UseInterceptors(FilesInterceptor(files[0].name)),
+      : UseInterceptors(FileInterceptor((files as IApiFile)?.name)),
   );
 }

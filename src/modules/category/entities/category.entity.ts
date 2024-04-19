@@ -15,6 +15,14 @@ export class CategoryEntity extends AbstractEntity {
   handle: string;
 
   @AutoMap()
+  @Column({ type: 'varchar', nullable: true })
+  icon?: string;
+
+  @AutoMap()
+  @Column({ type: 'uuid', nullable: true })
+  iconId: string;
+
+  @AutoMap()
   @Column({ type: 'text', nullable: true })
   description?: string;
 

@@ -8,6 +8,9 @@ export class CategoryDto {
   name: string;
 
   @AutoMap()
+  icon: string;
+
+  @AutoMap()
   handle: string;
 
   @AutoMap()

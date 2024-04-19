@@ -6,6 +6,9 @@ import { AuthorDto } from './author.dto';
 
 export class ToolDto {
   @AutoMap()
+  id: string;
+
+  @AutoMap()
   name: string;
 
   @AutoMap()
@@ -36,7 +39,7 @@ export class ToolDto {
   price: number;
 
   @AutoMap(() => ToolDealDto)
-  toolDeals: ToolDealDto;
+  toolDeals: ToolDealDto[];
 
   @AutoMap(() => CategoryDto)
   category!: CategoryDto;

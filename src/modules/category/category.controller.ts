@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Req,
+  UploadedFile,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -22,6 +23,8 @@ import { Permission } from '../../common/permissions.decorator';
 import { RolesGuard } from '../../guards/roles.guard';
 import { AuthenticationGuard } from '../auth/guards/auth.guard';
 import { IJwtPayload } from '../auth/payloads/jwt-payload.payload';
+import { ApiFile } from '../../common/swagger.decorator';
+import { IFile } from '../../interfaces/file.interface';
 
 @Controller('categories')
 @ApiTags('categories')
@@ -34,17 +37,27 @@ export class CategoryController {
     return this.categoryService.getList();
   }
 
+  @Get('info/:handle')
+  async getByName(@Param('handle') handle: string) {
+    return this.categoryService.getOneByHandle(handle);
+  }
+
   @Post()
   @UseGuards(AuthenticationGuard, RolesGuard)
   @Permission({
     action: PermissionActions.CREATE_CATEGORY,
     description: PermissionActions.CREATE_CATEGORY,
   })
+  @ApiFile({ name: 'avatar' })
   async create(
     @Body() dto: UpsertCategory,
     @Req() req: Request,
+    @UploadedFile() file?: IFile,
   ): Promise<UpsertCategoryResponse> {
-    return this.categoryService.insert(dto, <IJwtPayload>req.user);
+    console.log('====================================');
+    console.log('file', file);
+    console.log('====================================');
+    return this.categoryService.insert(dto, <IJwtPayload>req.user, file);
   }
 
   @Put(':id')

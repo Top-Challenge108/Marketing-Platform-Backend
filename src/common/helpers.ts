@@ -115,3 +115,23 @@ export const toDatabaseField = (
       return '_' + y.toLowerCase();
     })
     .replace(/^_/, '');
+
+export function parseInputString(inputString) {
+  // Step 1: Split the input string into individual JSON strings
+  const jsonStrings = inputString.split('},');
+
+  // Step 2: Parse each JSON string and store in an array
+  const parsedObjects = jsonStrings.map((jsonString, index) => {
+    // Add the closing brace for all but the last string
+    if (index < jsonStrings.length - 1) {
+      jsonString += '}';
+    }
+    // Clean the string by trimming white spaces and special characters
+    jsonString = jsonString.trim();
+
+    // Parse the JSON string
+    return JSON.parse(jsonString);
+  });
+
+  return parsedObjects;
+}
