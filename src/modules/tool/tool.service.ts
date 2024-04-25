@@ -26,6 +26,7 @@ import { PageDto } from '../../common/page.dto';
 import { FilterToolPageOptionsDto } from './dto/filter-tool.dto';
 import { parseInputString } from '../../common/helpers';
 import { IFile } from '../../interfaces/file.interface';
+import { UpsertToolDealDto } from './dto/upsert-tool-deal.dto';
 
 @Injectable()
 export class ToolService extends BaseAbstractService {
@@ -175,11 +176,6 @@ export class ToolService extends BaseAbstractService {
       throw new HttpException(result, HttpStatus.BAD_REQUEST);
     }
 
-    let deals = [];
-    if (dto.toolDeals) {
-      deals = this.toolDealRepository.create(parseInputString(dto.toolDeals));
-    }
-
     const category = await this.categoryRepository.findOneBy({
       id: dto.categoryId,
     });
@@ -216,67 +212,72 @@ export class ToolService extends BaseAbstractService {
     let logoEntity: FileEntity = null;
     let screenshots: FileEntity[] = [];
     try {
-      const uploadedLogo = await this.cloudinaryService.uploadImage(media.logo);
-      const logoObj = this.fileRepository.create({
-        publicId: uploadedLogo.public_id,
-        version: uploadedLogo.version,
-        signature: uploadedLogo.signature,
-        width: uploadedLogo.width,
-        height: uploadedLogo.height,
-        format: uploadedLogo.format,
-        resourceType: uploadedLogo.resource_type,
-        tags: uploadedLogo.tags,
-        pages: uploadedLogo.pages,
-        bytes: uploadedLogo.bytes,
-        type: uploadedLogo.type,
-        etag: uploadedLogo.etag,
-        placeholder: uploadedLogo.placeholder,
-        url: uploadedLogo.url,
-        secureUrl: uploadedLogo.url,
-        accessMode: uploadedLogo.access_mode,
-        originalFilename: uploadedLogo.original_filename,
-        moderation: uploadedLogo.moderation,
-        accessControl: uploadedLogo.access_control,
-      });
-      logoEntity = await this.fileRepository.save(logoObj);
-
-      let uploadingScreenshots = [];
-      if (Array.isArray(media.screenshots)) {
-        uploadingScreenshots = media.screenshots.map((screenshot) => {
-          return this.cloudinaryService.uploadImage(screenshot);
-        });
-      } else {
-        uploadingScreenshots.push(
-          this.cloudinaryService.uploadImage(media.screenshots as IFile),
+      if (media.logo) {
+        const uploadedLogo = await this.cloudinaryService.uploadImage(
+          media.logo,
         );
+        const logoObj = this.fileRepository.create({
+          publicId: uploadedLogo.public_id,
+          version: uploadedLogo.version,
+          signature: uploadedLogo.signature,
+          width: uploadedLogo.width,
+          height: uploadedLogo.height,
+          format: uploadedLogo.format,
+          resourceType: uploadedLogo.resource_type,
+          tags: uploadedLogo.tags,
+          pages: uploadedLogo.pages,
+          bytes: uploadedLogo.bytes,
+          type: uploadedLogo.type,
+          etag: uploadedLogo.etag,
+          placeholder: uploadedLogo.placeholder,
+          url: uploadedLogo.url,
+          secureUrl: uploadedLogo.url,
+          accessMode: uploadedLogo.access_mode,
+          originalFilename: uploadedLogo.original_filename,
+          moderation: uploadedLogo.moderation,
+          accessControl: uploadedLogo.access_control,
+        });
+        logoEntity = await this.fileRepository.save(logoObj);
       }
 
-      const uploadedScreenshots = await Promise.all(uploadingScreenshots);
-      const screenshotsObjs = uploadedScreenshots.map((screenshot) => {
-        return this.fileRepository.create({
-          publicId: screenshot.public_id,
-          version: screenshot.version,
-          signature: screenshot.signature,
-          width: screenshot.width,
-          height: screenshot.height,
-          format: screenshot.format,
-          resourceType: screenshot.resource_type,
-          tags: screenshot.tags,
-          pages: screenshot.pages,
-          bytes: screenshot.bytes,
-          type: screenshot.type,
-          etag: screenshot.etag,
-          placeholder: screenshot.placeholder,
-          url: screenshot.url,
-          secureUrl: screenshot.url,
-          accessMode: screenshot.access_mode,
-          originalFilename: screenshot.original_filename,
-          moderation: screenshot.moderation,
-          accessControl: screenshot.access_control,
-        });
-      });
+      if (media.screenshots?.length) {
+        let uploadingScreenshots = [];
+        if (Array.isArray(media.screenshots)) {
+          uploadingScreenshots = media.screenshots.map((screenshot) => {
+            return this.cloudinaryService.uploadImage(screenshot);
+          });
+        } else {
+          uploadingScreenshots.push(
+            this.cloudinaryService.uploadImage(media.screenshots as IFile),
+          );
+        }
 
-      screenshots = await this.fileRepository.save(screenshotsObjs);
+        const uploadedScreenshots = await Promise.all(uploadingScreenshots);
+        const screenshotsObjs = uploadedScreenshots.map((screenshot) => {
+          return this.fileRepository.create({
+            publicId: screenshot.public_id,
+            version: screenshot.version,
+            signature: screenshot.signature,
+            width: screenshot.width,
+            height: screenshot.height,
+            format: screenshot.format,
+            resourceType: screenshot.resource_type,
+            tags: screenshot.tags,
+            pages: screenshot.pages,
+            bytes: screenshot.bytes,
+            type: screenshot.type,
+            etag: screenshot.etag,
+            placeholder: screenshot.placeholder,
+            url: screenshot.url,
+            secureUrl: screenshot.url,
+            accessMode: screenshot.access_mode,
+            originalFilename: screenshot.original_filename,
+            moderation: screenshot.moderation,
+            accessControl: screenshot.access_control,
+          });
+        });
+        screenshots = await this.fileRepository.save(screenshotsObjs);
+      }
     } catch (error) {
       const result = await this.formatOutputData(
         {
@@ -289,6 +290,14 @@ export class ToolService extends BaseAbstractService {
         },
       );
       throw new HttpException(result, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    let deals = [];
+    if (dto.toolDeals && dto.toolDeals.length > 0) {
+      const toolDealdto: UpsertToolDealDto[] = JSON.parse(
+        dto.toolDeals as unknown as string,
+      );
+      deals = this.toolDealRepository.create(toolDealdto);
     }
 
     const tool = this.toolRepository.create({

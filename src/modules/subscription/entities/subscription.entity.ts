@@ -10,6 +10,10 @@ export class SubscriptionEntity extends AbstractEntity {
   name: string;
 
   @AutoMap()
+  @Column({ type: 'text', nullable: true })
+  descriptions: string;
+
+  @AutoMap()
   @Column({
     type: 'decimal',
     precision: 10,
@@ -18,6 +22,16 @@ export class SubscriptionEntity extends AbstractEntity {
     default: 0,
   })
   price: number;
+
+  @AutoMap()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 5,
+    nullable: false,
+    default: 0,
+  })
+  discountPrice: number;
 
   @AutoMap()
   @Column({ default: SubscriptionInterval.Month })

@@ -12,6 +12,12 @@ export class SubscriptionDto {
   price: string;
 
   @AutoMap()
+  discountPrice: string;
+
+  @AutoMap()
+  descriptions: string;
+
+  @AutoMap()
   interval: SubscriptionInterval;
 
   @AutoMap()

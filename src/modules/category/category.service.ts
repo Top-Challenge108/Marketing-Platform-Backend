@@ -67,6 +67,26 @@ export class CategoryService extends BaseAbstractService {
     );
   }
 
+  async getOneById(id) {
+    const result = await this.categoryRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    const res = this.mapper.map(result, CategoryEntity, CategoryDto);
+    return this.formatOutputData(
+      {
+        key: `translate.GET_CATEGORY_SUCCESSFULLY`,
+        lang: LanguageCode.United_States,
+      },
+      {
+        statusCode: StatusCode.GET_CATEGORY_SUCCESSFULLY,
+        data: res,
+      },
+    );
+  }
+
   async update(
     id: string,
     dto: UpsertCategory,

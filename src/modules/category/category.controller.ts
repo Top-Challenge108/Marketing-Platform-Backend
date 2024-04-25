@@ -42,6 +42,11 @@ export class CategoryController {
     return this.categoryService.getOneByHandle(handle);
   }
 
+  @Get('info-by-id/:id')
+  async getById(@Param('id') id: string) {
+    return this.categoryService.getOneById(id);
+  }
+
   @Post()
   @UseGuards(AuthenticationGuard, RolesGuard)
   @Permission({

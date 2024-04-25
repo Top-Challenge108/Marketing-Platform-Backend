@@ -6,7 +6,7 @@ import { ToolEntity } from './tool.entity';
 @Entity('tool_deals')
 export class ToolDealEntity extends AbstractEntity {
   @AutoMap()
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   name: string;
 
   @AutoMap()

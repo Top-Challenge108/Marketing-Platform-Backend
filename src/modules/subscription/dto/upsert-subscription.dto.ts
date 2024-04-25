@@ -1,7 +1,13 @@
 import { AutoMap } from '@automapper/classes';
 import { Currency, SubscriptionInterval } from '../enum/subscription.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class UpsertSubscriptionDto {
   @AutoMap()
@@ -15,6 +21,18 @@ export class UpsertSubscriptionDto {
   @IsNotEmpty()
   @IsNumber()
   price: number;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  discountPrice: number;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  descriptions: string;
 
   @AutoMap()
   @ApiProperty()

@@ -61,7 +61,7 @@ import { CategoryModule } from './modules/category/category.module';
           password: defaultDatabaseConfig.PASSWORD,
           database: defaultDatabaseConfig.DATABASE,
           migrationsRun: false,
-          logging: true,
+          logging: false,
           namingStrategy: new SnakeNamingStrategy(),
         };
       },
