@@ -24,7 +24,6 @@ import { PageOptionsDto } from '../../common/page-options.dto';
 import { PageMetaDto } from '../../common/page-meta.dto';
 import { PageDto } from '../../common/page.dto';
 import { FilterToolPageOptionsDto } from './dto/filter-tool.dto';
-import { parseInputString } from '../../common/helpers';
 import { IFile } from '../../interfaces/file.interface';
 import { UpsertToolDealDto } from './dto/upsert-tool-deal.dto';
 
@@ -136,10 +135,6 @@ export class ToolService extends BaseAbstractService {
       },
       relations: ['author', 'category', 'toolDeals'],
     });
-
-    console.log('====================================');
-    console.log('tool', tool);
-    console.log('====================================');
 
     const data = this.mapper.map(tool, ToolEntity, ToolDto);
 
@@ -320,8 +315,8 @@ export class ToolService extends BaseAbstractService {
         productName: toolEntity.name,
         recursionPlan: subscriptions.interval,
         currency: subscriptions.currency,
-        callbackSuccessUrl: `${stripeConfig.FRONTEND_URL}/success`,
-        callbackFailureUrl: `${stripeConfig.FRONTEND_URL}/cancel`,
+        callbackSuccessUrl: `${stripeConfig.FRONTEND_URL}/profile`,
+        callbackFailureUrl: `${stripeConfig.FRONTEND_URL}/payment-failed`,
       });
 
     if (!stripeSession) {
